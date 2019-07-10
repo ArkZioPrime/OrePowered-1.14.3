@@ -1,6 +1,7 @@
 package org.bukkit.entity;
 
 import org.bukkit.TreeSpecies;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Represents a boat entity.
@@ -9,17 +10,18 @@ public interface Boat extends Vehicle {
 
     /**
      * Gets the wood type of the boat.
-     * 
+     *
      * @return the wood type
      */
+    @NotNull
     TreeSpecies getWoodType();
 
     /**
      * Sets the wood type of the boat.
-     * 
+     *
      * @param species the new wood type
      */
-    void setWoodType(TreeSpecies species);
+    void setWoodType(@NotNull TreeSpecies species);
 
     /**
      * Gets the maximum speed of a boat. The speed is unrelated to the

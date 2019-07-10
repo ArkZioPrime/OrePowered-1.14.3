@@ -1,10 +1,11 @@
 package org.bukkit.util;
 
-import org.bukkit.ChatColor;
-
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+import org.bukkit.ChatColor;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * The ChatPaginator takes a raw string of arbitrary length and breaks it down
@@ -26,7 +27,8 @@ public class ChatPaginator {
      * @param pageNumber The page number to fetch.
      * @return A single chat page.
      */
-    public static ChatPage paginate(String unpaginatedString, int pageNumber) {
+    @NotNull
+    public static ChatPage paginate(@Nullable String unpaginatedString, int pageNumber) {
         return paginate(unpaginatedString, pageNumber, GUARANTEED_NO_WRAP_CHAT_PAGE_WIDTH, CLOSED_CHAT_PAGE_HEIGHT);
     }
 
@@ -39,7 +41,8 @@ public class ChatPaginator {
      * @param pageHeight The desired number of lines in a page.
      * @return A single chat page.
      */
-    public static ChatPage paginate(String unpaginatedString, int pageNumber, int lineLength, int pageHeight) {
+    @NotNull
+    public static ChatPage paginate(@Nullable String unpaginatedString, int pageNumber, int lineLength, int pageHeight) {
         String[] lines = wordWrap(unpaginatedString, lineLength);
 
         int totalPages = lines.length / pageHeight + (lines.length % pageHeight == 0 ? 0 : 1);
@@ -60,7 +63,8 @@ public class ChatPaginator {
      * @param lineLength The length of a line of text.
      * @return An array of word-wrapped lines.
      */
-    public static String[] wordWrap(String rawString, int lineLength) {
+    @NotNull
+    public static String[] wordWrap(@Nullable String rawString, int lineLength) {
         // A null string is a single line
         if (rawString == null) {
             return new String[] {""};
@@ -151,7 +155,7 @@ public class ChatPaginator {
         private int pageNumber;
         private int totalPages;
 
-        public ChatPage(String[] lines, int pageNumber, int totalPages) {
+        public ChatPage(@NotNull String[] lines, int pageNumber, int totalPages) {
             this.lines = lines;
             this.pageNumber = pageNumber;
             this.totalPages = totalPages;
@@ -165,8 +169,8 @@ public class ChatPaginator {
             return totalPages;
         }
 
+        @NotNull
         public String[] getLines() {
-
             return lines;
         }
     }

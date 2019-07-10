@@ -4,30 +4,15 @@ import org.bukkit.Material;
 
 /**
  * Represents a furnace or dispenser, two types of directional containers
+ *
+ * @deprecated all usage of MaterialData is deprecated and subject to removal.
+ * Use {@link org.bukkit.block.data.BlockData}.
  */
+@Deprecated
 public class FurnaceAndDispenser extends DirectionalContainer {
-
-    /**
-     * @param type the raw type id
-     * @deprecated Magic value
-     */
-    
-    public FurnaceAndDispenser(final int type) {
-        super(type);
-    }
 
     public FurnaceAndDispenser(final Material type) {
         super(type);
-    }
-
-    /**
-     * @param type the raw type id
-     * @param data the raw data value
-     * @deprecated Magic value
-     */
-    
-    public FurnaceAndDispenser(final int type, final byte data) {
-        super(type, data);
     }
 
     /**
@@ -35,7 +20,7 @@ public class FurnaceAndDispenser extends DirectionalContainer {
      * @param data the raw data value
      * @deprecated Magic value
      */
-    
+    @Deprecated
     public FurnaceAndDispenser(final Material type, final byte data) {
         super(type, data);
     }

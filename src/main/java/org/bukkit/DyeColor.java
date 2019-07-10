@@ -1,8 +1,9 @@
 package org.bukkit;
 
 import com.google.common.collect.ImmutableMap;
-
 import java.util.Map;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * All supported color values for dyes and cloth
@@ -42,9 +43,9 @@ public enum DyeColor {
      */
     GRAY(0x7, 0x8, Color.fromRGB(0x474F52), Color.fromRGB(0x434343)),
     /**
-     * Represents silver dye.
+     * Represents light gray dye.
      */
-    SILVER(0x8, 0x7, Color.fromRGB(0x9D9D97), Color.fromRGB(0xABABAB)),
+    LIGHT_GRAY(0x8, 0x7, Color.fromRGB(0x9D9D97), Color.fromRGB(0xABABAB)),
     /**
      * Represents cyan dye.
      */
@@ -78,12 +79,12 @@ public enum DyeColor {
     private final byte dyeData;
     private final Color color;
     private final Color firework;
-    private final static DyeColor[] BY_WOOL_DATA;
-    private final static DyeColor[] BY_DYE_DATA;
-    private final static Map<Color, DyeColor> BY_COLOR;
-    private final static Map<Color, DyeColor> BY_FIREWORK;
+    private static final DyeColor[] BY_WOOL_DATA;
+    private static final DyeColor[] BY_DYE_DATA;
+    private static final Map<Color, DyeColor> BY_COLOR;
+    private static final Map<Color, DyeColor> BY_FIREWORK;
 
-    private DyeColor(final int woolData, final int dyeData, Color color, Color firework) {
+    private DyeColor(final int woolData, final int dyeData, /*@NotNull*/ Color color, /*@NotNull*/ Color firework) {
         this.woolData = (byte) woolData;
         this.dyeData = (byte) dyeData;
         this.color = color;
@@ -97,7 +98,7 @@ public enum DyeColor {
      * @see #getDyeData()
      * @deprecated Magic value
      */
-    
+    @Deprecated
     public byte getWoolData() {
         return woolData;
     }
@@ -109,7 +110,7 @@ public enum DyeColor {
      * @see #getWoolData()
      * @deprecated Magic value
      */
-    
+    @Deprecated
     public byte getDyeData() {
         return dyeData;
     }
@@ -119,6 +120,7 @@ public enum DyeColor {
      *
      * @return The {@link Color} that this dye represents
      */
+    @NotNull
     public Color getColor() {
         return color;
     }
@@ -128,6 +130,7 @@ public enum DyeColor {
      *
      * @return The {@link Color} that this dye represents
      */
+    @NotNull
     public Color getFireworkColor() {
         return firework;
     }
@@ -141,7 +144,8 @@ public enum DyeColor {
      * @see #getByDyeData(byte)
      * @deprecated Magic value
      */
-    
+    @Deprecated
+    @Nullable
     public static DyeColor getByWoolData(final byte data) {
         int i = 0xff & data;
         if (i >= BY_WOOL_DATA.length) {
@@ -159,7 +163,8 @@ public enum DyeColor {
      * @see #getByWoolData(byte)
      * @deprecated Magic value
      */
-    
+    @Deprecated
+    @Nullable
     public static DyeColor getByDyeData(final byte data) {
         int i = 0xff & data;
         if (i >= BY_DYE_DATA.length) {
@@ -175,7 +180,8 @@ public enum DyeColor {
      * @return The {@link DyeColor} representing the given value, or null if
      *     it doesn't exist
      */
-    public static DyeColor getByColor(final Color color) {
+    @Nullable
+    public static DyeColor getByColor(@NotNull final Color color) {
         return BY_COLOR.get(color);
     }
 
@@ -186,8 +192,22 @@ public enum DyeColor {
      * @return The {@link DyeColor} representing the given value, or null if
      *     it doesn't exist
      */
-    public static DyeColor getByFireworkColor(final Color color) {
+    @Nullable
+    public static DyeColor getByFireworkColor(@NotNull final Color color) {
         return BY_FIREWORK.get(color);
+    }
+
+    /**
+     * Gets the DyeColor for the given name, possibly doing legacy transformations.
+     *
+     * @param name dye name
+     * @return dye color
+     * @deprecated legacy use only
+     */
+    @Deprecated
+    @NotNull
+    public static DyeColor legacyValueOf(@Nullable String name) {
+        return "SILVER".equals(name) ? DyeColor.LIGHT_GRAY : DyeColor.valueOf(name);
     }
 
     static {

@@ -1,13 +1,16 @@
 package org.bukkit;
 
-import org.bukkit.block.Block;
-import org.bukkit.configuration.serialization.ConfigurationSerializable;
-import org.bukkit.entity.Entity;
-import org.bukkit.util.NumberConversions;
-import org.bukkit.util.Vector;
-
+import com.google.common.base.Preconditions;
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.Map;
+import org.bukkit.block.Block;
+import org.bukkit.configuration.serialization.ConfigurationSerializable;
+import org.bukkit.util.NumberConversions;
+import org.bukkit.util.Vector;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Represents a 3-dimensional position in a world.
@@ -18,7 +21,7 @@ import java.util.Map;
  * representation by the implementation.
  */
 public class Location implements Cloneable, ConfigurationSerializable {
-    private World world;
+    private Reference<World> world;
     private double x;
     private double y;
     private double z;
@@ -33,7 +36,7 @@ public class Location implements Cloneable, ConfigurationSerializable {
      * @param y The y-coordinate of this new location
      * @param z The z-coordinate of this new location
      */
-    public Location(final World world, final double x, final double y, final double z) {
+    public Location(@Nullable final World world, final double x, final double y, final double z) {
         this(world, x, y, z, 0, 0);
     }
 
@@ -47,8 +50,11 @@ public class Location implements Cloneable, ConfigurationSerializable {
      * @param yaw The absolute rotation on the x-plane, in degrees
      * @param pitch The absolute rotation on the y-plane, in degrees
      */
-    public Location(final World world, final double x, final double y, final double z, final float yaw, final float pitch) {
-        this.world = world;
+    public Location(@Nullable final World world, final double x, final double y, final double z, final float yaw, final float pitch) {
+        if (world != null) {
+            this.world = new WeakReference<>(world);
+        }
+
         this.x = x;
         this.y = y;
         this.z = z;
@@ -61,16 +67,39 @@ public class Location implements Cloneable, ConfigurationSerializable {
      *
      * @param world New world that this location resides in
      */
-    public void setWorld(World world) {
-        this.world = world;
+    public void setWorld(@Nullable World world) {
+        this.world = (world == null) ? null : new WeakReference<>(world);
+    }
+
+    /**
+     * Checks if world in this location is present and loaded.
+     *
+     * @return true if is loaded, otherwise false
+     */
+    public boolean isWorldLoaded() {
+        if (this.world == null) {
+            return false;
+        }
+
+        World world = this.world.get();
+        return world != null && Bukkit.getWorld(world.getUID()) != null;
     }
 
     /**
      * Gets the world that this location resides in
      *
-     * @return World that contains this location
+     * @return World that contains this location, or {@code null} if it is not set
+     * @throws IllegalArgumentException when world is unloaded
+     * @see #isWorldLoaded()
      */
+    @Nullable
     public World getWorld() {
+        if (this.world == null) {
+            return null;
+        }
+
+        World world = this.world.get();
+        Preconditions.checkArgument(world != null, "World unloaded");
         return world;
     }
 
@@ -79,8 +108,9 @@ public class Location implements Cloneable, ConfigurationSerializable {
      *
      * @return Chunk at the represented location
      */
+    @NotNull
     public Chunk getChunk() {
-        return world.getChunkAt(this);
+        return getWorld().getChunkAt(this);
     }
 
     /**
@@ -88,8 +118,9 @@ public class Location implements Cloneable, ConfigurationSerializable {
      *
      * @return Block at the represented location
      */
+    @NotNull
     public Block getBlock() {
-        return world.getBlockAt(this);
+        return getWorld().getBlockAt(this);
     }
 
     /**
@@ -251,6 +282,7 @@ public class Location implements Cloneable, ConfigurationSerializable {
      * @return a vector pointing the direction of this location's {@link
      *     #getPitch() pitch} and {@link #getYaw() yaw}
      */
+    @NotNull
     public Vector getDirection() {
         Vector vector = new Vector();
 
@@ -270,11 +302,12 @@ public class Location implements Cloneable, ConfigurationSerializable {
     /**
      * Sets the {@link #getYaw() yaw} and {@link #getPitch() pitch} to point
      * in the direction of the vector.
-     * 
+     *
      * @param vector the direction vector
      * @return the same location
      */
-    public Location setDirection(Vector vector) {
+    @NotNull
+    public Location setDirection(@NotNull Vector vector) {
         /*
          * Sin = Opp / Hyp
          * Cos = Adj / Hyp
@@ -311,7 +344,8 @@ public class Location implements Cloneable, ConfigurationSerializable {
      * @return the same location
      * @throws IllegalArgumentException for differing worlds
      */
-    public Location add(Location vec) {
+    @NotNull
+    public Location add(@NotNull Location vec) {
         if (vec == null || vec.getWorld() != getWorld()) {
             throw new IllegalArgumentException("Cannot add Locations of differing worlds");
         }
@@ -329,7 +363,8 @@ public class Location implements Cloneable, ConfigurationSerializable {
      * @param vec Vector to use
      * @return the same location
      */
-    public Location add(Vector vec) {
+    @NotNull
+    public Location add(@NotNull Vector vec) {
         this.x += vec.getX();
         this.y += vec.getY();
         this.z += vec.getZ();
@@ -345,6 +380,7 @@ public class Location implements Cloneable, ConfigurationSerializable {
      * @param z Z coordinate
      * @return the same location
      */
+    @NotNull
     public Location add(double x, double y, double z) {
         this.x += x;
         this.y += y;
@@ -360,7 +396,8 @@ public class Location implements Cloneable, ConfigurationSerializable {
      * @return the same location
      * @throws IllegalArgumentException for differing worlds
      */
-    public Location subtract(Location vec) {
+    @NotNull
+    public Location subtract(@NotNull Location vec) {
         if (vec == null || vec.getWorld() != getWorld()) {
             throw new IllegalArgumentException("Cannot add Locations of differing worlds");
         }
@@ -378,7 +415,8 @@ public class Location implements Cloneable, ConfigurationSerializable {
      * @param vec The vector to use
      * @return the same location
      */
-    public Location subtract(Vector vec) {
+    @NotNull
+    public Location subtract(@NotNull Vector vec) {
         this.x -= vec.getX();
         this.y -= vec.getY();
         this.z -= vec.getZ();
@@ -395,6 +433,7 @@ public class Location implements Cloneable, ConfigurationSerializable {
      * @param z Z coordinate
      * @return the same location
      */
+    @NotNull
     public Location subtract(double x, double y, double z) {
         this.x -= x;
         this.y -= y;
@@ -440,7 +479,7 @@ public class Location implements Cloneable, ConfigurationSerializable {
      * @return the distance
      * @throws IllegalArgumentException for differing worlds
      */
-    public double distance(Location o) {
+    public double distance(@NotNull Location o) {
         return Math.sqrt(distanceSquared(o));
     }
 
@@ -452,7 +491,7 @@ public class Location implements Cloneable, ConfigurationSerializable {
      * @return the distance
      * @throws IllegalArgumentException for differing worlds
      */
-    public double distanceSquared(Location o) {
+    public double distanceSquared(@NotNull Location o) {
         if (o == null) {
             throw new IllegalArgumentException("Cannot measure distance to a null location");
         } else if (o.getWorld() == null || getWorld() == null) {
@@ -472,6 +511,7 @@ public class Location implements Cloneable, ConfigurationSerializable {
      * @see Vector
      * @return the same location
      */
+    @NotNull
     public Location multiply(double m) {
         x *= m;
         y *= m;
@@ -485,92 +525,12 @@ public class Location implements Cloneable, ConfigurationSerializable {
      * @see Vector
      * @return the same location
      */
+    @NotNull
     public Location zero() {
         x = 0;
         y = 0;
         z = 0;
         return this;
-    }
-	
-	/**
-     * Creates explosion at this location with given power
-     *
-     * Will break blocks and ignite blocks on fire.
-     *
-     * @param power The power of explosion, where 4F is TNT
-     * @return false if explosion was canceled, otherwise true
-     */
-    public boolean createExplosion(float power) {
-        return world.createExplosion(this, power);
-    }
-
-    /**
-     * Creates explosion at this location with given power and optionally
-     * setting blocks on fire.
-     *
-     * Will break blocks.
-     *
-     * @param power The power of explosion, where 4F is TNT
-     * @param setFire Whether or not to set blocks on fire
-     * @return false if explosion was canceled, otherwise true
-     */
-    public boolean createExplosion(float power, boolean setFire) {
-        return world.createExplosion(this, power, setFire);
-    }
-
-    /**
-     * Creates explosion at this location with given power and optionally
-     * setting blocks on fire.
-     *
-     * @param power The power of explosion, where 4F is TNT
-     * @param setFire Whether or not to set blocks on fire
-     * @param breakBlocks Whether or not to have blocks be destroyed
-     * @return false if explosion was canceled, otherwise true
-     */
-    public boolean createExplosion(float power, boolean setFire, boolean breakBlocks) {
-        return world.createExplosion(this, power, setFire, breakBlocks);
-    }
-
-    /**
-     * Creates explosion at this location with given power, with the specified entity as the source.
-     *
-     * Will break blocks and ignite blocks on fire.
-     *
-     * @param source The source entity of the explosion
-     * @param power The power of explosion, where 4F is TNT
-     * @return false if explosion was canceled, otherwise true
-     */
-    public boolean createExplosion(Entity source, float power) {
-        return world.createExplosion(source, this, power, true, true);
-    }
-
-    /**
-     * Creates explosion at this location with given power and optionally
-     * setting blocks on fire, with the specified entity as the source.
-     *
-     * Will break blocks.
-     *
-     * @param source The source entity of the explosion
-     * @param power The power of explosion, where 4F is TNT
-     * @param setFire Whether or not to set blocks on fire
-     * @return false if explosion was canceled, otherwise true
-     */
-    public boolean createExplosion(Entity source, float power, boolean setFire) {
-        return world.createExplosion(source, this, power, setFire, true);
-    }
-
-    /**
-     * Creates explosion at this location with given power and optionally
-     * setting blocks on fire, with the specified entity as the source.
-     *
-     * @param source The source entity of the explosion
-     * @param power The power of explosion, where 4F is TNT
-     * @param setFire Whether or not to set blocks on fire
-     * @param breakBlocks Whether or not to have blocks be destroyed
-     * @return false if explosion was canceled, otherwise true
-     */
-    public boolean createExplosion(Entity source, float power, boolean setFire, boolean breakBlocks) {
-        return world.createExplosion(source, source.getLocation(), power, setFire, breakBlocks);
     }
 
     @Override
@@ -583,7 +543,9 @@ public class Location implements Cloneable, ConfigurationSerializable {
         }
         final Location other = (Location) obj;
 
-        if (this.world != other.world && (this.world == null || !this.world.equals(other.world))) {
+        World world = (this.world == null) ? null : this.world.get();
+        World otherWorld = (other.world == null) ? null : other.world.get();
+        if (world != otherWorld && (world == null || !world.equals(otherWorld))) {
             return false;
         }
         if (Double.doubleToLongBits(this.x) != Double.doubleToLongBits(other.x)) {
@@ -608,7 +570,8 @@ public class Location implements Cloneable, ConfigurationSerializable {
     public int hashCode() {
         int hash = 3;
 
-        hash = 19 * hash + (this.world != null ? this.world.hashCode() : 0);
+        World world = (this.world == null) ? null : this.world.get();
+        hash = 19 * hash + (world != null ? world.hashCode() : 0);
         hash = 19 * hash + (int) (Double.doubleToLongBits(this.x) ^ (Double.doubleToLongBits(this.x) >>> 32));
         hash = 19 * hash + (int) (Double.doubleToLongBits(this.y) ^ (Double.doubleToLongBits(this.y) >>> 32));
         hash = 19 * hash + (int) (Double.doubleToLongBits(this.z) ^ (Double.doubleToLongBits(this.z) >>> 32));
@@ -619,6 +582,7 @@ public class Location implements Cloneable, ConfigurationSerializable {
 
     @Override
     public String toString() {
+        World world = (this.world == null) ? null : this.world.get();
         return "Location{" + "world=" + world + ",x=" + x + ",y=" + y + ",z=" + z + ",pitch=" + pitch + ",yaw=" + yaw + '}';
     }
 
@@ -628,11 +592,13 @@ public class Location implements Cloneable, ConfigurationSerializable {
      * @return New Vector containing the coordinates represented by this
      *     Location
      */
+    @NotNull
     public Vector toVector() {
         return new Vector(x, y, z);
     }
 
     @Override
+    @NotNull
     public Location clone() {
         try {
             return (Location) super.clone();
@@ -665,10 +631,15 @@ public class Location implements Cloneable, ConfigurationSerializable {
         return NumberConversions.floor(loc);
     }
 
+    @Override
     @Utility
+    @NotNull
     public Map<String, Object> serialize() {
         Map<String, Object> data = new HashMap<String, Object>();
-        data.put("world", this.world.getName());
+
+        if (this.world != null) {
+            data.put("world", getWorld().getName());
+        }
 
         data.put("x", this.x);
         data.put("y", this.y);
@@ -688,12 +659,51 @@ public class Location implements Cloneable, ConfigurationSerializable {
      * @throws IllegalArgumentException if the world don't exists
      * @see ConfigurationSerializable
      */
-    public static Location deserialize(Map<String, Object> args) {
-        World world = Bukkit.getWorld((String) args.get("world"));
-        if (world == null) {
-            throw new IllegalArgumentException("unknown world");
+    @NotNull
+    public static Location deserialize(@NotNull Map<String, Object> args) {
+        World world = null;
+        if (args.containsKey("world")) {
+            world = Bukkit.getWorld((String) args.get("world"));
+            if (world == null) {
+                throw new IllegalArgumentException("unknown world");
+            }
         }
 
         return new Location(world, NumberConversions.toDouble(args.get("x")), NumberConversions.toDouble(args.get("y")), NumberConversions.toDouble(args.get("z")), NumberConversions.toFloat(args.get("yaw")), NumberConversions.toFloat(args.get("pitch")));
+    }
+
+    /**
+     * Normalizes the given yaw angle to a value between <code>+/-180</code>
+     * degrees.
+     *
+     * @param yaw the yaw in degrees
+     * @return the normalized yaw in degrees
+     * @see Location#getYaw()
+     */
+    public static float normalizeYaw(float yaw) {
+        yaw %= 360.0f;
+        if (yaw >= 180.0f) {
+            yaw -= 360.0f;
+        } else if (yaw < -180.0f) {
+            yaw += 360.0f;
+        }
+        return yaw;
+    }
+
+    /**
+     * Normalizes the given pitch angle to a value between <code>+/-90</code>
+     * degrees.
+     *
+     * @param pitch the pitch in degrees
+     * @return the normalized pitch in degrees
+     * @see Location#getPitch()
+     */
+    public static float normalizePitch(float pitch) {
+        if (pitch > 90.0f) {
+            pitch = 90.0f;
+        } else if (pitch < -90.0f) {
+            pitch = -90.0f;
+        }
+        return pitch;
     }
 }

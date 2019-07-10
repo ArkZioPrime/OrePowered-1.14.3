@@ -20,8 +20,8 @@ public interface Creeper extends Monster {
     public void setPowered(boolean value);
 
     /**
-     * Set the maximum fuse ticks for this Creeper, where the maximum ticks 
-     * is the amount of time in which a creeper is allowed to be in the 
+     * Set the maximum fuse ticks for this Creeper, where the maximum ticks
+     * is the amount of time in which a creeper is allowed to be in the
      * primed state before exploding.
      *
      * @param ticks the new maximum fuse ticks
@@ -29,8 +29,8 @@ public interface Creeper extends Monster {
     public void setMaxFuseTicks(int ticks);
 
     /**
-     * Get the maximum fuse ticks for this Creeper, where the maximum ticks 
-     * is the amount of time in which a creeper is allowed to be in the 
+     * Get the maximum fuse ticks for this Creeper, where the maximum ticks
+     * is the amount of time in which a creeper is allowed to be in the
      * primed state before exploding.
      *
      * @return the maximum fuse ticks
@@ -50,4 +50,25 @@ public interface Creeper extends Monster {
      * @return the explosion radius
      */
     public int getExplosionRadius();
+
+    /**
+     * Makes this Creeper explode instantly.
+     *
+     * The resulting explosion can be cancelled by an
+     * {@link org.bukkit.event.entity.ExplosionPrimeEvent} and obeys the mob
+     * griefing gamerule.
+     */
+    public void explode();
+
+    /**
+     * Ignites this Creeper, beginning its fuse.
+     *
+     * The amount of time the Creeper takes to explode will depend on what
+     * {@link #setMaxFuseTicks} is set as.
+     *
+     * The resulting explosion can be cancelled by an
+     * {@link org.bukkit.event.entity.ExplosionPrimeEvent} and obeys the mob
+     * griefing gamerule.
+     */
+    public void ignite();
 }

@@ -1,5 +1,24 @@
 package org.bukkit.event.inventory;
 
+import org.bukkit.inventory.InventoryHolder;
+import org.jetbrains.annotations.NotNull;
+
+/**
+ * Represents the different kinds of inventories available in Bukkit.
+ * <br>
+ * Only InventoryTypes marked {@link #isCreatable()} can be created.
+ * <br>
+ * The current list of inventories that cannot be created via
+ * {@link org.bukkit.Bukkit#createInventory} are:<br>
+ * <blockquote>
+ *     {@link InventoryType#CREATIVE}, {@link InventoryType#CRAFTING} and
+ *     {@link InventoryType#MERCHANT}
+ * </blockquote>
+ *
+ * See {@link org.bukkit.Bukkit#createInventory} for more information.
+ *
+ * @see org.bukkit.Bukkit#createInventory(InventoryHolder, InventoryType)
+ */
 public enum InventoryType {
 
     /**
@@ -28,14 +47,14 @@ public enum InventoryType {
      * A player's crafting inventory, with 4 CRAFTING slots and a RESULT slot.
      * Also implies that the 4 ARMOR slots are accessible.
      */
-    CRAFTING(5,"Crafting"),
+    CRAFTING(5,"Crafting", false),
     /**
      * An enchantment table inventory, with two CRAFTING slots and three
      * enchanting buttons.
      */
     ENCHANTING(2,"Enchanting"),
     /**
-     * A brewing stand inventory, with one FUEL slot and three CRAFTING slots.
+     * A brewing stand inventory, with one FUEL slot and four CRAFTING slots.
      */
     BREWING(5,"Brewing"),
     /**
@@ -49,11 +68,11 @@ public enum InventoryType {
      * else. (The actual creative interface with the items is client-side and
      * cannot be altered by the server.)
      */
-    CREATIVE(9,"Creative"),
+    CREATIVE(9,"Creative", false),
     /**
-     * The merchant inventory, with 2 TRADE-IN slots, and 1 RESULT slot.
+     * The merchant inventory, with 2 CRAFTING slots, and 1 RESULT slot.
      */
-    MERCHANT(3,"Villager"),
+    MERCHANT(3,"Villager", false),
     /**
      * The ender chest inventory, with 27 slots.
      */
@@ -74,22 +93,72 @@ public enum InventoryType {
      * A shulker box inventory, with 27 slots of type CONTAINER.
      */
     SHULKER_BOX(27, "Shulker Box"),
+    /**
+     * A barrel box inventory, with 27 slots of type CONTAINER.
+     */
+    BARREL(27, "Barrel"),
+    /**
+     * A blast furnace inventory, with a RESULT slot, a CRAFTING slot, and a
+     * FUEL slot.
+     */
+    BLAST_FURNACE(3, "Blast Furnace"),
+    /**
+     * A lectern inventory, with 1 BOOK slot.
+     */
+    LECTERN(1, "Lectern"),
+    /**
+     * A smoker inventory, with a RESULT slot, a CRAFTING slot, and a FUEL slot.
+     */
+    SMOKER(3, "Smoker"),
+    /**
+     * Loom inventory, with 3 CRAFTING slots, and 1 RESULT slot.
+     */
+    LOOM(4, "Loom"),
+    /**
+     * Cartography inventory with 2 CRAFTING slots, and 1 RESULT slot.
+     */
+    CARTOGRAPHY(3, "Cartography Table"),
+    /**
+     * Grindstone inventory with 2 CRAFTING slots, and 1 RESULT slot.
+     */
+    GRINDSTONE(3, "Repair & Disenchant"),
+    /**
+     * Stonecutter inventory with 1 CRAFTING slot, and 1 RESULT slot.
+     */
+    STONECUTTER(2, "Stonecutter")
     ;
 
     private final int size;
     private final String title;
+    private final boolean isCreatable;
 
-    private InventoryType(int defaultSize, String defaultTitle) {
+    private InventoryType(int defaultSize, /*@NotNull*/ String defaultTitle) {
+        this(defaultSize, defaultTitle, true);
+    }
+
+    private InventoryType(int defaultSize, /*@NotNull*/ String defaultTitle, boolean isCreatable) {
         size = defaultSize;
         title = defaultTitle;
+        this.isCreatable = isCreatable;
     }
 
     public int getDefaultSize() {
         return size;
     }
 
+    @NotNull
     public String getDefaultTitle() {
         return title;
+    }
+
+    /**
+     * Denotes that this InventoryType can be created via the normal
+     * {@link org.bukkit.Bukkit#createInventory} methods.
+     *
+     * @return if this InventoryType can be created and shown to a player
+     */
+    public boolean isCreatable() {
+        return isCreatable;
     }
 
     public enum SlotType {
@@ -98,9 +167,7 @@ public enum InventoryType {
          */
         RESULT,
         /**
-         * A slot in the crafting matrix, or the input slot in a furnace
-         * inventory, the potion slot in the brewing stand, or the enchanting
-         * slot.
+         * A slot in the crafting matrix, or an 'input' slot.
          */
         CRAFTING,
         /**

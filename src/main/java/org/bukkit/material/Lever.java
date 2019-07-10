@@ -5,19 +5,14 @@ import org.bukkit.block.BlockFace;
 
 /**
  * Represents a lever
+ *
+ * @deprecated all usage of MaterialData is deprecated and subject to removal.
+ * Use {@link org.bukkit.block.data.BlockData}.
  */
+@Deprecated
 public class Lever extends SimpleAttachableMaterialData implements Redstone {
     public Lever() {
-        super(Material.LEVER);
-    }
-
-    /**
-     * @param type the raw type id
-     * @deprecated Magic value
-     */
-    
-    public Lever(final int type) {
-        super(type);
+        super(Material.LEGACY_LEVER);
     }
 
     public Lever(final Material type) {
@@ -25,21 +20,11 @@ public class Lever extends SimpleAttachableMaterialData implements Redstone {
     }
 
     /**
-     * @param type the raw type id
-     * @param data the raw data value
-     * @deprecated Magic value
-     */
-    
-    public Lever(final int type, final byte data) {
-        super(type, data);
-    }
-
-    /**
      * @param type the type
      * @param data the raw data value
      * @deprecated Magic value
      */
-    
+    @Deprecated
     public Lever(final Material type, final byte data) {
         super(type, data);
     }
@@ -50,6 +35,7 @@ public class Lever extends SimpleAttachableMaterialData implements Redstone {
      *
      * @return true if powered, otherwise false
      */
+    @Override
     public boolean isPowered() {
         return (getData() & 0x8) == 0x8;
     }
@@ -68,6 +54,7 @@ public class Lever extends SimpleAttachableMaterialData implements Redstone {
      *
      * @return BlockFace attached to
      */
+    @Override
     public BlockFace getAttachedFace() {
         byte data = (byte) (getData() & 0x7);
 
@@ -100,6 +87,7 @@ public class Lever extends SimpleAttachableMaterialData implements Redstone {
     /**
      * Sets the direction this lever is pointing in
      */
+    @Override
     public void setFacingDirection(BlockFace face) {
         byte data = (byte) (getData() & 0x8);
         BlockFace attach = getAttachedFace();

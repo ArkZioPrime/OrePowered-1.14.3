@@ -5,19 +5,14 @@ import org.bukkit.block.BlockFace;
 
 /**
  * Represents a button
+ *
+ * @deprecated all usage of MaterialData is deprecated and subject to removal.
+ * Use {@link org.bukkit.block.data.BlockData}.
  */
+@Deprecated
 public class Button extends SimpleAttachableMaterialData implements Redstone {
     public Button() {
-        super(Material.STONE_BUTTON);
-    }
-
-    /**
-     * @param type the type
-     * @deprecated Magic value
-     */
-    
-    public Button(final int type) {
-        super(type);
+        super(Material.LEGACY_STONE_BUTTON);
     }
 
     public Button(final Material type) {
@@ -25,21 +20,11 @@ public class Button extends SimpleAttachableMaterialData implements Redstone {
     }
 
     /**
-     * @param type the raw type id
-     * @param data the raw data value
-     * @deprecated Magic value
-     */
-    
-    public Button(final int type, final byte data) {
-        super(type, data);
-    }
-
-    /**
      * @param type the type
      * @param data the raw data value
      * @deprecated Magic value
      */
-    
+    @Deprecated
     public Button(final Material type, final byte data) {
         super(type, data);
     }
@@ -50,6 +35,7 @@ public class Button extends SimpleAttachableMaterialData implements Redstone {
      *
      * @return true if powered, otherwise false
      */
+    @Override
     public boolean isPowered() {
         return (getData() & 0x8) == 0x8;
     }
@@ -69,6 +55,7 @@ public class Button extends SimpleAttachableMaterialData implements Redstone {
      *
      * @return BlockFace attached to
      */
+    @Override
     public BlockFace getAttachedFace() {
         byte data = (byte) (getData() & 0x7);
 
@@ -98,6 +85,7 @@ public class Button extends SimpleAttachableMaterialData implements Redstone {
     /**
      * Sets the direction this button is pointing toward
      */
+    @Override
     public void setFacingDirection(BlockFace face) {
         byte data = (byte) (getData() & 0x8);
 

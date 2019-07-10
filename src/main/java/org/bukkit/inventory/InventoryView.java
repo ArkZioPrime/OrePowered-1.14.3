@@ -1,7 +1,10 @@
 package org.bukkit.inventory;
 
+import com.google.common.base.Preconditions;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.event.inventory.InventoryType;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Represents a view linking two inventories and a single player (whose
@@ -12,7 +15,7 @@ import org.bukkit.event.inventory.InventoryType;
  * as it should.
  */
 public abstract class InventoryView {
-    public final static int OUTSIDE = -999;
+    public static final int OUTSIDE = -999;
     /**
      * Represents various extra properties of certain inventory windows.
      */
@@ -95,14 +98,19 @@ public abstract class InventoryView {
         /**
          * The repair's cost in xp levels
          */
-        REPAIR_COST(0, InventoryType.ANVIL);
+        REPAIR_COST(0, InventoryType.ANVIL),
+        /**
+         * The lectern's current open book page
+         */
+        BOOK_PAGE(0, InventoryType.LECTERN);
         int id;
         InventoryType style;
-        private Property(int id, InventoryType appliesTo) {
+        private Property(int id, /*@NotNull*/ InventoryType appliesTo) {
             this.id = id;
             style = appliesTo;
         }
 
+        @NotNull
         public InventoryType getType() {
             return style;
         }
@@ -112,6 +120,7 @@ public abstract class InventoryView {
          * @return the id of this view
          * @deprecated Magic value
          */
+        @Deprecated
         public int getId() {
             return id;
         }
@@ -121,6 +130,7 @@ public abstract class InventoryView {
      *
      * @return the inventory
      */
+    @NotNull
     public abstract Inventory getTopInventory();
 
     /**
@@ -128,6 +138,7 @@ public abstract class InventoryView {
      *
      * @return the inventory
      */
+    @NotNull
     public abstract Inventory getBottomInventory();
 
     /**
@@ -135,6 +146,7 @@ public abstract class InventoryView {
      *
      * @return the player
      */
+    @NotNull
     public abstract HumanEntity getPlayer();
 
     /**
@@ -144,6 +156,7 @@ public abstract class InventoryView {
      *
      * @return the inventory type
      */
+    @NotNull
     public abstract InventoryType getType();
 
     /**
@@ -155,14 +168,11 @@ public abstract class InventoryView {
      * @param slot The ID as returned by InventoryClickEvent.getRawSlot()
      * @param item The new item to put in the slot, or null to clear it.
      */
-    public void setItem(int slot, ItemStack item) {
-        if (slot != OUTSIDE) {
-            if (slot < getTopInventory().getSize()) {
-                getTopInventory().setItem(convertSlot(slot), item);
-            } else {
-                getBottomInventory().setItem(convertSlot(slot), item);
-            }
-        } else {
+    public void setItem(int slot, @Nullable ItemStack item) {
+        Inventory inventory = getInventory(slot);
+        if (inventory != null) {
+            inventory.setItem(convertSlot(slot), item);
+        } else if (item != null) {
             getPlayer().getWorld().dropItemNaturally(getPlayer().getLocation(), item);
         }
     }
@@ -173,15 +183,10 @@ public abstract class InventoryView {
      * @param slot The ID as returned by InventoryClickEvent.getRawSlot()
      * @return The item currently in the slot.
      */
+    @Nullable
     public ItemStack getItem(int slot) {
-        if (slot == OUTSIDE) {
-            return null;
-        }
-        if (slot < getTopInventory().getSize()) {
-            return getTopInventory().getItem(convertSlot(slot));
-        } else {
-            return getBottomInventory().getItem(convertSlot(slot));
-        }
+        Inventory inventory = getInventory(slot);
+        return (inventory == null) ? null : inventory.getItem(convertSlot(slot));
     }
 
     /**
@@ -190,7 +195,7 @@ public abstract class InventoryView {
      * @param item The item to put on the cursor, or null to remove the item
      *     on their cursor.
      */
-    public final void setCursor(ItemStack item) {
+    public final void setCursor(@Nullable ItemStack item) {
         getPlayer().setItemOnCursor(item);
     }
 
@@ -200,8 +205,38 @@ public abstract class InventoryView {
      * @return The item on the player's cursor, or null if they aren't holding
      *     one.
      */
+    @Nullable
     public final ItemStack getCursor() {
         return getPlayer().getItemOnCursor();
+    }
+
+    /**
+     * Gets the inventory corresponding to the given raw slot ID.
+     *
+     * If the slot ID is {@link #OUTSIDE} null will be returned, otherwise
+     * behaviour for illegal and negative slot IDs is undefined.
+     *
+     * May be used with {@link #convertSlot(int)} to directly index an
+     * underlying inventory.
+     *
+     * @param rawSlot The raw slot ID.
+     * @return corresponding inventory, or null
+     */
+    @Nullable
+    public final Inventory getInventory(int rawSlot) {
+        // Slot may be -1 if not properly detected due to client bug
+        // e.g. dropping an item into part of the enchantment list section of an enchanting table
+        if (rawSlot == OUTSIDE || rawSlot == -1) {
+            return null;
+        }
+        Preconditions.checkArgument(rawSlot >= 0, "Negative, non outside slot %s", rawSlot);
+        Preconditions.checkArgument(rawSlot < countSlots(), "Slot %s greater than inventory slot count", rawSlot);
+
+        if (rawSlot < getTopInventory().getSize()) {
+            return getTopInventory();
+        } else {
+            return getBottomInventory();
+        }
     }
 
     /**
@@ -281,6 +316,95 @@ public abstract class InventoryView {
     }
 
     /**
+     * Determine the type of the slot by its raw slot ID.
+     * <p>
+     * If the type of the slot is unknown, then
+     * {@link InventoryType.SlotType#CONTAINER} will be returned.
+     *
+     * @param slot The raw slot ID
+     * @return the slot type
+     */
+    @NotNull
+    public final InventoryType.SlotType getSlotType(int slot) {
+        InventoryType.SlotType type = InventoryType.SlotType.CONTAINER;
+        if (slot >= 0 && slot < this.getTopInventory().getSize()) {
+            switch(this.getType()) {
+            case BLAST_FURNACE:
+            case FURNACE:
+            case SMOKER:
+                if (slot == 2) {
+                    type = InventoryType.SlotType.RESULT;
+                } else if(slot == 1) {
+                    type = InventoryType.SlotType.FUEL;
+                } else {
+                    type = InventoryType.SlotType.CRAFTING;
+                }
+                break;
+            case BREWING:
+                if (slot == 3) {
+                    type = InventoryType.SlotType.FUEL;
+                } else {
+                    type = InventoryType.SlotType.CRAFTING;
+                }
+                break;
+            case ENCHANTING:
+                type = InventoryType.SlotType.CRAFTING;
+                break;
+            case WORKBENCH:
+            case CRAFTING:
+                if (slot == 0) {
+                    type = InventoryType.SlotType.RESULT;
+                } else {
+                    type = InventoryType.SlotType.CRAFTING;
+                }
+                break;
+            case BEACON:
+                type = InventoryType.SlotType.CRAFTING;
+                break;
+            case ANVIL:
+            case CARTOGRAPHY:
+            case GRINDSTONE:
+            case MERCHANT:
+                if (slot == 2) {
+                    type = InventoryType.SlotType.RESULT;
+                } else {
+                    type = InventoryType.SlotType.CRAFTING;
+                }
+                break;
+            case STONECUTTER:
+                if (slot == 1) {
+                    type = InventoryType.SlotType.RESULT;
+                } else {
+                    type = InventoryType.SlotType.CRAFTING;
+                }
+                break;
+            case LOOM:
+                if (slot == 3) {
+                    type = InventoryType.SlotType.RESULT;
+                } else {
+                    type = InventoryType.SlotType.CRAFTING;
+                }
+                break;
+            default:
+                // Nothing to do, it's a CONTAINER slot
+            }
+        } else {
+            if (slot < 0) {
+                type = InventoryType.SlotType.OUTSIDE;
+            } else if (this.getType() == InventoryType.CRAFTING) { // Also includes creative inventory
+                if (slot < 9) {
+                    type = InventoryType.SlotType.ARMOR;
+                } else if (slot > 35) {
+                    type = InventoryType.SlotType.QUICKBAR;
+                }
+            } else if (slot >= (this.countSlots() - (9 + 4 + 1))) { // Quickbar, Armor, Offhand
+                type = InventoryType.SlotType.QUICKBAR;
+            }
+        }
+        return type;
+    }
+
+    /**
      * Closes the inventory view.
      */
     public final void close() {
@@ -309,7 +433,7 @@ public abstract class InventoryView {
      * @return true if the property was updated successfully, false if the
      *     property is not supported by that inventory
      */
-    public final boolean setProperty(Property prop, int value) {
+    public final boolean setProperty(@NotNull Property prop, int value) {
         return getPlayer().setWindowProperty(prop, value);
     }
 
@@ -318,7 +442,6 @@ public abstract class InventoryView {
      *
      * @return The title.
      */
-    public final String getTitle() {
-        return getTopInventory().getTitle();
-    }
+    @NotNull
+    public abstract String getTitle();
 }

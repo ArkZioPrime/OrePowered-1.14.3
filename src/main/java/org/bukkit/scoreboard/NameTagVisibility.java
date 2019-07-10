@@ -3,7 +3,7 @@ package org.bukkit.scoreboard;
 /**
  * @deprecated replaced by {@link Team.OptionStatus}
  */
-
+@Deprecated
 public enum NameTagVisibility {
 
     /**

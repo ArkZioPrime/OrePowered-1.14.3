@@ -1,8 +1,27 @@
 package org.bukkit.plugin;
 
 import com.google.common.collect.ImmutableSet;
+import java.io.File;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.WeakHashMap;
+import java.util.logging.Level;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Server;
+import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.PluginCommandYamlParser;
 import org.bukkit.command.SimpleCommandMap;
@@ -14,26 +33,8 @@ import org.bukkit.permissions.Permissible;
 import org.bukkit.permissions.Permission;
 import org.bukkit.permissions.PermissionDefault;
 import org.bukkit.util.FileUtil;
-import red.mohist.Mohist;
-import red.mohist.i18n.Message;
-
-import java.io.File;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.WeakHashMap;
-import java.util.logging.Level;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Handles all plugin management from the Server
@@ -51,12 +52,12 @@ public final class SimplePluginManager implements PluginManager {
     private final Map<Boolean, Map<Permissible, Boolean>> defSubs = new HashMap<Boolean, Map<Permissible, Boolean>>();
     private boolean useTimings = false;
 
-    public SimplePluginManager(Server instance, SimpleCommandMap commandMap) {
+    public SimplePluginManager(@NotNull Server instance, @NotNull SimpleCommandMap commandMap) {
         server = instance;
         this.commandMap = commandMap;
 
-        defaultPerms.put(true, new HashSet<Permission>());
-        defaultPerms.put(false, new HashSet<Permission>());
+        defaultPerms.put(true, new LinkedHashSet<Permission>());
+        defaultPerms.put(false, new LinkedHashSet<Permission>());
     }
 
     /**
@@ -66,7 +67,8 @@ public final class SimplePluginManager implements PluginManager {
      * @throws IllegalArgumentException Thrown when the given Class is not a
      *     valid PluginLoader
      */
-    public void registerInterface(Class<? extends PluginLoader> loader) throws IllegalArgumentException {
+    @Override
+    public void registerInterface(@NotNull Class<? extends PluginLoader> loader) throws IllegalArgumentException {
         PluginLoader instance;
 
         if (PluginLoader.class.isAssignableFrom(loader)) {
@@ -101,7 +103,9 @@ public final class SimplePluginManager implements PluginManager {
      * @param directory Directory to check for plugins
      * @return A list of all plugins loaded
      */
-    public Plugin[] loadPlugins(File directory) {
+    @Override
+    @NotNull
+    public Plugin[] loadPlugins(@NotNull File directory) {
         Validate.notNull(directory, "Directory cannot be null");
         Validate.isTrue(directory.isDirectory(), "Directory must be a directory");
 
@@ -133,15 +137,15 @@ public final class SimplePluginManager implements PluginManager {
             try {
                 description = loader.getPluginDescription(file);
                 String name = description.getName();
-                if (name.equalsIgnoreCase("bukkit") || name.equalsIgnoreCase("minecraft") || name.equalsIgnoreCase("mojang")  || name.equalsIgnoreCase("spigot") || name.equalsIgnoreCase("forge") || name.equalsIgnoreCase("paper") || name.equalsIgnoreCase("mohist")) {
-                    Mohist.LOGGER.error( "Could not load '" + file.getPath() + "' in folder '" + directory.getPath() + "': Restricted Name");
+                if (name.equalsIgnoreCase("bukkit") || name.equalsIgnoreCase("minecraft") || name.equalsIgnoreCase("mojang")) {
+                    server.getLogger().log(Level.SEVERE, "Could not load '" + file.getPath() + "' in folder '" + directory.getPath() + "': Restricted Name");
                     continue;
                 } else if (description.rawName.indexOf(' ') != -1) {
-                    Mohist.LOGGER.error( "Could not load '" + file.getPath() + "' in folder '" + directory.getPath() + "': uses the space-character (0x20) in its name");
+                    server.getLogger().log(Level.SEVERE, "Could not load '" + file.getPath() + "' in folder '" + directory.getPath() + "': uses the space-character (0x20) in its name");
                     continue;
                 }
             } catch (InvalidDescriptionException ex) {
-                Mohist.LOGGER.error(Message.getFormatString(Message.Exception_Invalid_Description,new Object[]{file.getPath(),directory.getPath()}), ex);//by: lliiooll
+                server.getLogger().log(Level.SEVERE, "Could not load '" + file.getPath() + "' in folder '" + directory.getPath() + "'", ex);
                 continue;
             }
 
@@ -186,8 +190,6 @@ public final class SimplePluginManager implements PluginManager {
             }
         }
 
-        loadedPlugins.addAll(ImmutableSet.of("Mohist", "Forge"));
-
         while (!plugins.isEmpty()) {
             boolean missingDependency = true;
             Iterator<Map.Entry<String, File>> pluginIterator = plugins.entrySet().iterator();
@@ -215,8 +217,8 @@ public final class SimplePluginManager implements PluginManager {
 
                             server.getLogger().log(
                                 Level.SEVERE,
-                                    Message.getFormatString(Message.Exception_Could_not_load_plugin,new Object[]{entry.getValue().getPath(),directory.getPath()}),// by: lliioollcn
-                                new UnknownDependencyException(Message.getFormatString(Message.Exception_plugin_not_hav_depend,new Object[]{dependency})));
+                                "Could not load '" + entry.getValue().getPath() + "' in folder '" + directory.getPath() + "'",
+                                new UnknownDependencyException(dependency));
                             break;
                         }
                     }
@@ -252,7 +254,7 @@ public final class SimplePluginManager implements PluginManager {
                         loadedPlugins.add(plugin);
                         continue;
                     } catch (InvalidPluginException ex) {
-                        Mohist.LOGGER.error(Message.getFormatString(Message.Exception_Invalid_Plugin,new Object[]{file.getPath(),directory.getPath()}), ex);//by: lliiooll
+                        server.getLogger().log(Level.SEVERE, "Could not load '" + file.getPath() + "' in folder '" + directory.getPath() + "'", ex);
                     }
                 }
             }
@@ -277,7 +279,7 @@ public final class SimplePluginManager implements PluginManager {
                             loadedPlugins.add(plugin);
                             break;
                         } catch (InvalidPluginException ex) {
-                            Mohist.LOGGER.error(Message.getFormatString(Message.Exception_Invalid_Plugin,new Object[]{file.getPath(),directory.getPath()}),ex);//by: lliiooll
+                            server.getLogger().log(Level.SEVERE, "Could not load '" + file.getPath() + "' in folder '" + directory.getPath() + "'", ex);
                         }
                     }
                 }
@@ -290,7 +292,7 @@ public final class SimplePluginManager implements PluginManager {
                     while (failedPluginIterator.hasNext()) {
                         File file = failedPluginIterator.next();
                         failedPluginIterator.remove();
-                        Mohist.LOGGER.error( "Could not load '" + file.getPath() + "' in folder '" + directory.getPath() + "': circular dependency detected");
+                        server.getLogger().log(Level.SEVERE, "Could not load '" + file.getPath() + "' in folder '" + directory.getPath() + "': circular dependency detected");
                     }
                 }
             }
@@ -311,7 +313,9 @@ public final class SimplePluginManager implements PluginManager {
      * @throws UnknownDependencyException If a required dependency could not
      *     be found
      */
-    public synchronized Plugin loadPlugin(File file) throws InvalidPluginException, UnknownDependencyException {
+    @Override
+    @Nullable
+    public synchronized Plugin loadPlugin(@NotNull File file) throws InvalidPluginException, UnknownDependencyException {
         Validate.notNull(file, "File cannot be null");
 
         checkUpdate(file);
@@ -338,7 +342,7 @@ public final class SimplePluginManager implements PluginManager {
         return result;
     }
 
-    private void checkUpdate(File file) {
+    private void checkUpdate(@NotNull File file) {
         if (updateDirectory == null || !updateDirectory.isDirectory()) {
             return;
         }
@@ -357,10 +361,14 @@ public final class SimplePluginManager implements PluginManager {
      * @param name Name of the plugin to check
      * @return Plugin if it exists, otherwise null
      */
-    public synchronized Plugin getPlugin(String name) {
+    @Override
+    @Nullable
+    public synchronized Plugin getPlugin(@NotNull String name) {
         return lookupNames.get(name.replace(' ', '_'));
     }
 
+    @Override
+    @NotNull
     public synchronized Plugin[] getPlugins() {
         return plugins.toArray(new Plugin[plugins.size()]);
     }
@@ -373,7 +381,8 @@ public final class SimplePluginManager implements PluginManager {
      * @param name Name of the plugin to check
      * @return true if the plugin is enabled, otherwise false
      */
-    public boolean isPluginEnabled(String name) {
+    @Override
+    public boolean isPluginEnabled(@NotNull String name) {
         Plugin plugin = getPlugin(name);
 
         return isPluginEnabled(plugin);
@@ -385,7 +394,8 @@ public final class SimplePluginManager implements PluginManager {
      * @param plugin Plugin to check
      * @return true if the plugin is enabled, otherwise false
      */
-    public synchronized boolean isPluginEnabled(Plugin plugin) { // Paper - synchronize
+    @Override
+    public boolean isPluginEnabled(@Nullable Plugin plugin) {
         if ((plugin != null) && (plugins.contains(plugin))) {
             return plugin.isEnabled();
         } else {
@@ -393,7 +403,8 @@ public final class SimplePluginManager implements PluginManager {
         }
     }
 
-    public synchronized void enablePlugin(final Plugin plugin) { // Paper - synchronize
+    @Override
+    public void enablePlugin(@NotNull final Plugin plugin) {
         if (!plugin.isEnabled()) {
             List<Command> pluginCommands = PluginCommandYamlParser.parse(plugin);
 
@@ -406,33 +417,24 @@ public final class SimplePluginManager implements PluginManager {
             } catch (Throwable ex) {
                 server.getLogger().log(Level.SEVERE, "Error occurred (in the plugin loader) while enabling " + plugin.getDescription().getFullName() + " (Is it up to date?)", ex);
             }
+
             HandlerList.bakeAll();
         }
     }
 
-    // Paper start - close Classloader on disable
+    @Override
     public void disablePlugins() {
-        disablePlugins(false);
-    }
-
-    public void disablePlugins(boolean closeClassloaders) {
-        // Paper end - close Classloader on disable
         Plugin[] plugins = getPlugins();
         for (int i = plugins.length - 1; i >= 0; i--) {
-            disablePlugin(plugins[i], closeClassloaders); // Paper - close Classloader on disable
+            disablePlugin(plugins[i]);
         }
     }
 
-    // Paper start - close Classloader on disable
-    public void disablePlugin(Plugin plugin) {
-        disablePlugin(plugin, false);
-    }
-
-    public synchronized void disablePlugin(final Plugin plugin, boolean closeClassloader) { // Paper - synchronize
-        // Paper end - close Classloader on disable
+    @Override
+    public void disablePlugin(@NotNull final Plugin plugin) {
         if (plugin.isEnabled()) {
             try {
-                plugin.getPluginLoader().disablePlugin(plugin, closeClassloader); // Paper - close Classloader on disable
+                plugin.getPluginLoader().disablePlugin(plugin);
             } catch (Throwable ex) {
                 server.getLogger().log(Level.SEVERE, "Error occurred (in the plugin loader) while disabling " + plugin.getDescription().getFullName() + " (Is it up to date?)", ex);
             }
@@ -461,12 +463,21 @@ public final class SimplePluginManager implements PluginManager {
             } catch (Throwable ex) {
                 server.getLogger().log(Level.SEVERE, "Error occurred (in the plugin loader) while unregistering plugin channels for " + plugin.getDescription().getFullName() + " (Is it up to date?)", ex);
             }
+
+            try {
+                for (World world : server.getWorlds()) {
+                    world.removePluginChunkTickets(plugin);
+                }
+            } catch (Throwable ex) {
+                server.getLogger().log(Level.SEVERE, "Error occurred (in the plugin loader) while removing chunk tickets for " + plugin.getDescription().getFullName() + " (Is it up to date?)", ex);
+            }
         }
     }
 
+    @Override
     public void clearPlugins() {
         synchronized (this) {
-            disablePlugins(true); // Paper - close Classloader on disable
+            disablePlugins();
             plugins.clear();
             lookupNames.clear();
             HandlerList.unregisterAll();
@@ -477,8 +488,6 @@ public final class SimplePluginManager implements PluginManager {
         }
     }
 
-    private void fireEvent(Event event) { callEvent(event); } // Paper - support old method incase plugin uses reflection
-
     /**
      * Calls an event with the given details.
      * <p>
@@ -486,8 +495,27 @@ public final class SimplePluginManager implements PluginManager {
      *
      * @param event Event details
      */
-    public void callEvent(Event event) {
-        // Paper - replace callEvent by merging to below method
+    @Override
+    public void callEvent(@NotNull Event event) {
+        if (event.isAsynchronous()) {
+            if (Thread.holdsLock(this)) {
+                throw new IllegalStateException(event.getEventName() + " cannot be triggered asynchronously from inside synchronized code.");
+            }
+            if (server.isPrimaryThread()) {
+                throw new IllegalStateException(event.getEventName() + " cannot be triggered asynchronously from primary server thread.");
+            }
+            fireEvent(event);
+        } else {
+            if (!server.isPrimaryThread()) {
+                throw new IllegalStateException(event.getEventName() + " cannot be triggered asynchronously from another thread.");
+            }
+            synchronized (this) {
+                fireEvent(event);
+            }
+        }
+    }
+
+    private void fireEvent(@NotNull Event event) {
         HandlerList handlers = event.getHandlers();
         RegisteredListener[] listeners = handlers.getRegisteredListeners();
 
@@ -504,7 +532,7 @@ public final class SimplePluginManager implements PluginManager {
                 if (plugin.isNaggable()) {
                     plugin.setNaggable(false);
 
-                    Mohist.LOGGER.error( String.format(
+                    server.getLogger().log(Level.SEVERE, String.format(
                             "Nag author(s): '%s' of '%s' about the following: %s",
                             plugin.getDescription().getAuthors(),
                             plugin.getDescription().getFullName(),
@@ -517,7 +545,8 @@ public final class SimplePluginManager implements PluginManager {
         }
     }
 
-    public void registerEvents(Listener listener, Plugin plugin) {
+    @Override
+    public void registerEvents(@NotNull Listener listener, @NotNull Plugin plugin) {
         if (!plugin.isEnabled()) {
             throw new IllegalPluginAccessException("Plugin attempted to register " + listener + " while not enabled");
         }
@@ -528,7 +557,8 @@ public final class SimplePluginManager implements PluginManager {
 
     }
 
-    public void registerEvent(Class<? extends Event> event, Listener listener, EventPriority priority, EventExecutor executor, Plugin plugin) {
+    @Override
+    public void registerEvent(@NotNull Class<? extends Event> event, @NotNull Listener listener, @NotNull EventPriority priority, @NotNull EventExecutor executor, @NotNull Plugin plugin) {
         registerEvent(event, listener, priority, executor, plugin, false);
     }
 
@@ -544,7 +574,8 @@ public final class SimplePluginManager implements PluginManager {
      * @param ignoreCancelled Do not call executor if event was already
      *     cancelled
      */
-    public void registerEvent(Class<? extends Event> event, Listener listener, EventPriority priority, EventExecutor executor, Plugin plugin, boolean ignoreCancelled) {
+    @Override
+    public void registerEvent(@NotNull Class<? extends Event> event, @NotNull Listener listener, @NotNull EventPriority priority, @NotNull EventExecutor executor, @NotNull Plugin plugin, boolean ignoreCancelled) {
         Validate.notNull(listener, "Listener cannot be null");
         Validate.notNull(priority, "Priority cannot be null");
         Validate.notNull(executor, "Executor cannot be null");
@@ -561,7 +592,8 @@ public final class SimplePluginManager implements PluginManager {
         }
     }
 
-    private HandlerList getEventListeners(Class<? extends Event> type) {
+    @NotNull
+    private HandlerList getEventListeners(@NotNull Class<? extends Event> type) {
         try {
             Method method = getRegistrationClass(type).getDeclaredMethod("getHandlerList");
             method.setAccessible(true);
@@ -571,7 +603,8 @@ public final class SimplePluginManager implements PluginManager {
         }
     }
 
-    private Class<? extends Event> getRegistrationClass(Class<? extends Event> clazz) {
+    @NotNull
+    private Class<? extends Event> getRegistrationClass(@NotNull Class<? extends Event> clazz) {
         try {
             clazz.getDeclaredMethod("getHandlerList");
             return clazz;
@@ -586,15 +619,19 @@ public final class SimplePluginManager implements PluginManager {
         }
     }
 
-    public Permission getPermission(String name) {
+    @Override
+    @Nullable
+    public Permission getPermission(@NotNull String name) {
         return permissions.get(name.toLowerCase(java.util.Locale.ENGLISH));
     }
 
-    public void addPermission(Permission perm) {
+    @Override
+    public void addPermission(@NotNull Permission perm) {
         addPermission(perm, true);
     }
 
-    public void addPermission(Permission perm, boolean dirty) {
+    @Deprecated
+    public void addPermission(@NotNull Permission perm, boolean dirty) {
         String name = perm.getName().toLowerCase(java.util.Locale.ENGLISH);
 
         if (permissions.containsKey(name)) {
@@ -605,19 +642,24 @@ public final class SimplePluginManager implements PluginManager {
         calculatePermissionDefault(perm, dirty);
     }
 
+    @Override
+    @NotNull
     public Set<Permission> getDefaultPermissions(boolean op) {
         return ImmutableSet.copyOf(defaultPerms.get(op));
     }
 
-    public void removePermission(Permission perm) {
+    @Override
+    public void removePermission(@NotNull Permission perm) {
         removePermission(perm.getName());
     }
 
-    public void removePermission(String name) {
+    @Override
+    public void removePermission(@NotNull String name) {
         permissions.remove(name.toLowerCase(java.util.Locale.ENGLISH));
     }
 
-    public void recalculatePermissionDefaults(Permission perm) {
+    @Override
+    public void recalculatePermissionDefaults(@NotNull Permission perm) {
         if (perm != null && permissions.containsKey(perm.getName().toLowerCase(java.util.Locale.ENGLISH))) {
             defaultPerms.get(true).remove(perm);
             defaultPerms.get(false).remove(perm);
@@ -626,7 +668,7 @@ public final class SimplePluginManager implements PluginManager {
         }
     }
 
-    private void calculatePermissionDefault(Permission perm, boolean dirty) {
+    private void calculatePermissionDefault(@NotNull Permission perm, boolean dirty) {
         if ((perm.getDefault() == PermissionDefault.OP) || (perm.getDefault() == PermissionDefault.TRUE)) {
             defaultPerms.get(true).add(perm);
             if (dirty) {
@@ -641,7 +683,7 @@ public final class SimplePluginManager implements PluginManager {
         }
     }
 
-
+    @Deprecated
     public void dirtyPermissibles() {
         dirtyPermissibles(true);
         dirtyPermissibles(false);
@@ -655,7 +697,8 @@ public final class SimplePluginManager implements PluginManager {
         }
     }
 
-    public void subscribeToPermission(String permission, Permissible permissible) {
+    @Override
+    public void subscribeToPermission(@NotNull String permission, @NotNull Permissible permissible) {
         String name = permission.toLowerCase(java.util.Locale.ENGLISH);
         Map<Permissible, Boolean> map = permSubs.get(name);
 
@@ -667,7 +710,8 @@ public final class SimplePluginManager implements PluginManager {
         map.put(permissible, true);
     }
 
-    public void unsubscribeFromPermission(String permission, Permissible permissible) {
+    @Override
+    public void unsubscribeFromPermission(@NotNull String permission, @NotNull Permissible permissible) {
         String name = permission.toLowerCase(java.util.Locale.ENGLISH);
         Map<Permissible, Boolean> map = permSubs.get(name);
 
@@ -680,7 +724,9 @@ public final class SimplePluginManager implements PluginManager {
         }
     }
 
-    public Set<Permissible> getPermissionSubscriptions(String permission) {
+    @Override
+    @NotNull
+    public Set<Permissible> getPermissionSubscriptions(@NotNull String permission) {
         String name = permission.toLowerCase(java.util.Locale.ENGLISH);
         Map<Permissible, Boolean> map = permSubs.get(name);
 
@@ -691,7 +737,8 @@ public final class SimplePluginManager implements PluginManager {
         }
     }
 
-    public void subscribeToDefaultPerms(boolean op, Permissible permissible) {
+    @Override
+    public void subscribeToDefaultPerms(boolean op, @NotNull Permissible permissible) {
         Map<Permissible, Boolean> map = defSubs.get(op);
 
         if (map == null) {
@@ -702,7 +749,8 @@ public final class SimplePluginManager implements PluginManager {
         map.put(permissible, true);
     }
 
-    public void unsubscribeFromDefaultPerms(boolean op, Permissible permissible) {
+    @Override
+    public void unsubscribeFromDefaultPerms(boolean op, @NotNull Permissible permissible) {
         Map<Permissible, Boolean> map = defSubs.get(op);
 
         if (map != null) {
@@ -714,6 +762,8 @@ public final class SimplePluginManager implements PluginManager {
         }
     }
 
+    @Override
+    @NotNull
     public Set<Permissible> getDefaultPermSubscriptions(boolean op) {
         Map<Permissible, Boolean> map = defSubs.get(op);
 
@@ -724,10 +774,13 @@ public final class SimplePluginManager implements PluginManager {
         }
     }
 
+    @Override
+    @NotNull
     public Set<Permission> getPermissions() {
         return new HashSet<Permission>(permissions.values());
     }
 
+    @Override
     public boolean useTimings() {
         return useTimings;
     }

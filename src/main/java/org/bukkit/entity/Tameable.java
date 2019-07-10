@@ -1,5 +1,7 @@
 package org.bukkit.entity;
 
+import org.jetbrains.annotations.Nullable;
+
 public interface Tameable extends Entity {
 
     /**
@@ -23,20 +25,12 @@ public interface Tameable extends Entity {
      */
     public void setTamed(boolean tame);
 
-    // Paper start
-    /**
-     * Gets the owners UUID
-     *
-     * @return the owners UUID, or null if not owned
-     */
-    public java.util.UUID getOwnerUUID();
-    // Paper end
-
     /**
      * Gets the current owning AnimalTamer
      *
      * @return the owning AnimalTamer, or null if not owned
      */
+    @Nullable
     public AnimalTamer getOwner();
 
     /**
@@ -48,6 +42,6 @@ public interface Tameable extends Entity {
      *
      * @param tamer the AnimalTamer who should own this
      */
-    public void setOwner(AnimalTamer tamer);
+    public void setOwner(@Nullable AnimalTamer tamer);
 
 }

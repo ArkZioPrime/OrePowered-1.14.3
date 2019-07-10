@@ -1,14 +1,16 @@
 package org.bukkit.inventory;
 
+import com.google.common.base.Preconditions;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Keyed;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.material.MaterialData;
-
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Represents a shapeless recipe, where the arrangement of the ingredients on
@@ -17,9 +19,12 @@ import java.util.List;
 public class ShapelessRecipe implements Recipe, Keyed {
     private final NamespacedKey key;
     private final ItemStack output;
-    private final List<ItemStack> ingredients = new ArrayList<ItemStack>();
+    private final List<RecipeChoice> ingredients = new ArrayList<>();
+    private String group = "";
 
-    public ShapelessRecipe(ItemStack result) {
+    @Deprecated
+    public ShapelessRecipe(@NotNull ItemStack result) {
+        Preconditions.checkArgument(result.getType() != Material.AIR, "Recipe must have non-AIR result.");
         this.key = NamespacedKey.randomKey();
         this.output = new ItemStack(result);
     }
@@ -38,7 +43,8 @@ public class ShapelessRecipe implements Recipe, Keyed {
      * @see ShapelessRecipe#addIngredient(int,MaterialData)
      * @see ShapelessRecipe#addIngredient(int,Material,int)
      */
-    public ShapelessRecipe(NamespacedKey key, ItemStack result) {
+    public ShapelessRecipe(@NotNull NamespacedKey key, @NotNull ItemStack result) {
+        Preconditions.checkArgument(result.getType() != Material.AIR, "Recipe must have non-AIR result.");
         this.key = key;
         this.output = new ItemStack(result);
     }
@@ -49,7 +55,8 @@ public class ShapelessRecipe implements Recipe, Keyed {
      * @param ingredient The ingredient to add.
      * @return The changed recipe, so you can chain calls.
      */
-    public ShapelessRecipe addIngredient(MaterialData ingredient) {
+    @NotNull
+    public ShapelessRecipe addIngredient(@NotNull MaterialData ingredient) {
         return addIngredient(1, ingredient);
     }
 
@@ -59,7 +66,8 @@ public class ShapelessRecipe implements Recipe, Keyed {
      * @param ingredient The ingredient to add.
      * @return The changed recipe, so you can chain calls.
      */
-    public ShapelessRecipe addIngredient(Material ingredient) {
+    @NotNull
+    public ShapelessRecipe addIngredient(@NotNull Material ingredient) {
         return addIngredient(1, ingredient, 0);
     }
 
@@ -71,7 +79,9 @@ public class ShapelessRecipe implements Recipe, Keyed {
      * @return The changed recipe, so you can chain calls.
      * @deprecated Magic value
      */
-    public ShapelessRecipe addIngredient(Material ingredient, int rawdata) {
+    @Deprecated
+    @NotNull
+    public ShapelessRecipe addIngredient(@NotNull Material ingredient, int rawdata) {
         return addIngredient(1, ingredient, rawdata);
     }
 
@@ -82,7 +92,8 @@ public class ShapelessRecipe implements Recipe, Keyed {
      * @param ingredient The ingredient to add.
      * @return The changed recipe, so you can chain calls.
      */
-    public ShapelessRecipe addIngredient(int count, MaterialData ingredient) {
+    @NotNull
+    public ShapelessRecipe addIngredient(int count, @NotNull MaterialData ingredient) {
         return addIngredient(count, ingredient.getItemType(), ingredient.getData());
     }
 
@@ -93,7 +104,8 @@ public class ShapelessRecipe implements Recipe, Keyed {
      * @param ingredient The ingredient to add.
      * @return The changed recipe, so you can chain calls.
      */
-    public ShapelessRecipe addIngredient(int count, Material ingredient) {
+    @NotNull
+    public ShapelessRecipe addIngredient(int count, @NotNull Material ingredient) {
         return addIngredient(count, ingredient, 0);
     }
 
@@ -106,7 +118,9 @@ public class ShapelessRecipe implements Recipe, Keyed {
      * @return The changed recipe, so you can chain calls.
      * @deprecated Magic value
      */
-    public ShapelessRecipe addIngredient(int count, Material ingredient, int rawdata) {
+    @Deprecated
+    @NotNull
+    public ShapelessRecipe addIngredient(int count, @NotNull Material ingredient, int rawdata) {
         Validate.isTrue(ingredients.size() + count <= 9, "Shapeless recipes cannot have more than 9 ingredients");
 
         // -1 is the old wildcard, map to Short.MAX_VALUE as the new one
@@ -115,8 +129,29 @@ public class ShapelessRecipe implements Recipe, Keyed {
         }
 
         while (count-- > 0) {
-            ingredients.add(new ItemStack(ingredient, 1, (short) rawdata));
+            ingredients.add(new RecipeChoice.MaterialChoice(Collections.singletonList(ingredient)));
         }
+        return this;
+    }
+
+    @NotNull
+    public ShapelessRecipe addIngredient(@NotNull RecipeChoice ingredient) {
+        Validate.isTrue(ingredients.size() + 1 <= 9, "Shapeless recipes cannot have more than 9 ingredients");
+
+        ingredients.add(ingredient);
+        return this;
+    }
+
+    /**
+     * Removes an ingredient from the list.
+     *
+     * @param ingredient The ingredient to remove
+     * @return The changed recipe.
+     */
+    @NotNull
+    public ShapelessRecipe removeIngredient(@NotNull RecipeChoice ingredient) {
+        ingredients.remove(ingredient);
+
         return this;
     }
 
@@ -128,7 +163,8 @@ public class ShapelessRecipe implements Recipe, Keyed {
      * @param ingredient The ingredient to remove
      * @return The changed recipe.
      */
-    public ShapelessRecipe removeIngredient(Material ingredient) {
+    @NotNull
+    public ShapelessRecipe removeIngredient(@NotNull Material ingredient) {
         return removeIngredient(ingredient, 0);
     }
 
@@ -140,7 +176,8 @@ public class ShapelessRecipe implements Recipe, Keyed {
      * @param ingredient The ingredient to remove
      * @return The changed recipe.
      */
-    public ShapelessRecipe removeIngredient(MaterialData ingredient) {
+    @NotNull
+    public ShapelessRecipe removeIngredient(@NotNull MaterialData ingredient) {
         return removeIngredient(ingredient.getItemType(), ingredient.getData());
     }
 
@@ -153,7 +190,8 @@ public class ShapelessRecipe implements Recipe, Keyed {
      * @param ingredient The ingredient to remove
      * @return The changed recipe.
      */
-    public ShapelessRecipe removeIngredient(int count, Material ingredient) {
+    @NotNull
+    public ShapelessRecipe removeIngredient(int count, @NotNull Material ingredient) {
         return removeIngredient(count, ingredient, 0);
     }
 
@@ -166,7 +204,8 @@ public class ShapelessRecipe implements Recipe, Keyed {
      * @param ingredient The ingredient to remove.
      * @return The changed recipe.
      */
-    public ShapelessRecipe removeIngredient(int count, MaterialData ingredient) {
+    @NotNull
+    public ShapelessRecipe removeIngredient(int count, @NotNull MaterialData ingredient) {
         return removeIngredient(count, ingredient.getItemType(), ingredient.getData());
     }
 
@@ -180,7 +219,9 @@ public class ShapelessRecipe implements Recipe, Keyed {
      * @return The changed recipe.
      * @deprecated Magic value
      */
-    public ShapelessRecipe removeIngredient(Material ingredient, int rawdata) {
+    @Deprecated
+    @NotNull
+    public ShapelessRecipe removeIngredient(@NotNull Material ingredient, int rawdata) {
         return removeIngredient(1, ingredient, rawdata);
     }
 
@@ -195,11 +236,12 @@ public class ShapelessRecipe implements Recipe, Keyed {
      * @return The changed recipe.
      * @deprecated Magic value
      */
-
-    public ShapelessRecipe removeIngredient(int count, Material ingredient, int rawdata) {
-        Iterator<ItemStack> iterator = ingredients.iterator();
+    @Deprecated
+    @NotNull
+    public ShapelessRecipe removeIngredient(int count, @NotNull Material ingredient, int rawdata) {
+        Iterator<RecipeChoice> iterator = ingredients.iterator();
         while (count > 0 && iterator.hasNext()) {
-            ItemStack stack = iterator.next();
+            ItemStack stack = iterator.next().getItemStack();
             if (stack.getType() == ingredient && stack.getDurability() == rawdata) {
                 iterator.remove();
                 count--;
@@ -213,6 +255,8 @@ public class ShapelessRecipe implements Recipe, Keyed {
      *
      * @return The result stack.
      */
+    @Override
+    @NotNull
     public ItemStack getResult() {
         return output.clone();
     }
@@ -222,16 +266,50 @@ public class ShapelessRecipe implements Recipe, Keyed {
      *
      * @return The input list
      */
+    @NotNull
     public List<ItemStack> getIngredientList() {
         ArrayList<ItemStack> result = new ArrayList<ItemStack>(ingredients.size());
-        for (ItemStack ingredient : ingredients) {
+        for (RecipeChoice ingredient : ingredients) {
+            result.add(ingredient.getItemStack().clone());
+        }
+        return result;
+    }
+
+    @NotNull
+    public List<RecipeChoice> getChoiceList() {
+        List<RecipeChoice> result = new ArrayList<>(ingredients.size());
+        for (RecipeChoice ingredient : ingredients) {
             result.add(ingredient.clone());
         }
         return result;
     }
 
+    @NotNull
     @Override
     public NamespacedKey getKey() {
         return key;
+    }
+
+    /**
+     * Get the group of this recipe. Recipes with the same group may be grouped
+     * together when displayed in the client.
+     *
+     * @return recipe group. An empty string denotes no group. May not be null.
+     */
+    @NotNull
+    public String getGroup() {
+        return group;
+    }
+
+    /**
+     * Set the group of this recipe. Recipes with the same group may be grouped
+     * together when displayed in the client.
+     *
+     * @param group recipe group. An empty string denotes no group. May not be
+     * null.
+     */
+    public void setGroup(@NotNull String group) {
+        Preconditions.checkArgument(group != null, "group");
+        this.group = group;
     }
 }

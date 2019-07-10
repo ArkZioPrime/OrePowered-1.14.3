@@ -1,6 +1,7 @@
 package org.bukkit.entity;
 
 import org.bukkit.DyeColor;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Represents a Wolf
@@ -17,10 +18,10 @@ public interface Wolf extends Animals, Tameable, Sittable {
     /**
      * Sets the anger of this wolf.
      * <p>
-     * An angry wolf can not be fed or tamed, and will actively look for
-     * targets to attack.
+     * An angry wolf can not be fed or tamed.
      *
      * @param angry true if angry
+     * @see #setTarget(org.bukkit.entity.LivingEntity)
      */
     public void setAngry(boolean angry);
 
@@ -29,6 +30,7 @@ public interface Wolf extends Animals, Tameable, Sittable {
      *
      * @return the color of the collar
      */
+    @NotNull
     public DyeColor getCollarColor();
 
     /**
@@ -36,5 +38,5 @@ public interface Wolf extends Animals, Tameable, Sittable {
      *
      * @param color the color to apply
      */
-    public void setCollarColor(DyeColor color);
+    public void setCollarColor(@NotNull DyeColor color);
 }

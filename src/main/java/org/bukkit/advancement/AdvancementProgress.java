@@ -2,6 +2,8 @@ package org.bukkit.advancement;
 
 import java.util.Collection;
 import java.util.Date;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * The individual status of an advancement for a player. This class is not
@@ -14,6 +16,7 @@ public interface AdvancementProgress {
      *
      * @return the relevant advancement
      */
+    @NotNull
     Advancement getAdvancement();
 
     /**
@@ -30,7 +33,7 @@ public interface AdvancementProgress {
      * @return true if awarded, false if criteria does not exist or already
      * awarded.
      */
-    boolean awardCriteria(String criteria);
+    boolean awardCriteria(@NotNull String criteria);
 
     /**
      * Mark the specified criteria as uncompleted.
@@ -38,7 +41,7 @@ public interface AdvancementProgress {
      * @param criteria the criteria to mark
      * @return true if removed, false if criteria does not exist or not awarded
      */
-    boolean revokeCriteria(String criteria);
+    boolean revokeCriteria(@NotNull String criteria);
 
     /**
      * Get the date the specified criteria was awarded.
@@ -46,13 +49,15 @@ public interface AdvancementProgress {
      * @param criteria the criteria to check
      * @return date awarded or null if unawarded or criteria does not exist
      */
-    Date getDateAwarded(String criteria);
+    @Nullable
+    Date getDateAwarded(@NotNull String criteria);
 
     /**
      * Get the criteria which have not been awarded.
      *
      * @return unmodifiable copy of criteria remaining
      */
+    @NotNull
     Collection<String> getRemainingCriteria();
 
     /**
@@ -60,5 +65,6 @@ public interface AdvancementProgress {
      *
      * @return unmodifiable copy of criteria awarded
      */
+    @NotNull
     Collection<String> getAwardedCriteria();
 }

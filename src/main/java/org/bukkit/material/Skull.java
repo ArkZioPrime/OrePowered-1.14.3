@@ -5,10 +5,14 @@ import org.bukkit.block.BlockFace;
 
 /**
  * Represents a skull.
+ *
+ * @deprecated all usage of MaterialData is deprecated and subject to removal.
+ * Use {@link org.bukkit.block.data.BlockData}.
  */
+@Deprecated
 public class Skull extends MaterialData implements Directional {
     public Skull() {
-        super(Material.SKULL);
+        super(Material.LEGACY_SKULL);
     }
 
     /**
@@ -21,27 +25,8 @@ public class Skull extends MaterialData implements Directional {
         setFacingDirection(direction);
     }
 
-    /**
-     * @param type the raw type id
-     * @deprecated Magic value
-     */
-    
-    public Skull(final int type) {
-        super(type);
-    }
-
     public Skull(final Material type) {
         super(type);
-    }
-
-    /**
-     * @param type the raw type id
-     * @param data the raw data value
-     * @deprecated Magic value
-     */
-    
-    public Skull(final int type, final byte data) {
-        super(type, data);
     }
 
     /**
@@ -49,11 +34,12 @@ public class Skull extends MaterialData implements Directional {
      * @param data the raw data value
      * @deprecated Magic value
      */
-    
+    @Deprecated
     public Skull(final Material type, final byte data) {
         super(type, data);
     }
 
+    @Override
     public void setFacingDirection(BlockFace face) {
         int data;
 
@@ -82,6 +68,7 @@ public class Skull extends MaterialData implements Directional {
         setData((byte) data);
     }
 
+    @Override
     public BlockFace getFacing() {
         int data = getData();
 

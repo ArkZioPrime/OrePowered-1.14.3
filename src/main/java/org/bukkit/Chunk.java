@@ -1,8 +1,11 @@
 package org.bukkit;
 
+import java.util.Collection;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.entity.Entity;
+import org.bukkit.plugin.Plugin;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Represents a chunk of blocks
@@ -28,6 +31,7 @@ public interface Chunk {
      *
      * @return Parent World
      */
+    @NotNull
     World getWorld();
 
     /**
@@ -38,6 +42,7 @@ public interface Chunk {
      * @param z 0-15
      * @return the Block
      */
+    @NotNull
     Block getBlock(int x, int y, int z);
 
     /**
@@ -45,6 +50,7 @@ public interface Chunk {
      *
      * @return ChunkSnapshot
      */
+    @NotNull
     ChunkSnapshot getChunkSnapshot();
 
     /**
@@ -58,6 +64,7 @@ public interface Chunk {
      *     raw biome temperature and rainfall
      * @return ChunkSnapshot
      */
+    @NotNull
     ChunkSnapshot getChunkSnapshot(boolean includeMaxblocky, boolean includeBiome, boolean includeBiomeTempRain);
 
     /**
@@ -65,6 +72,7 @@ public interface Chunk {
      *
      * @return The entities.
      */
+    @NotNull
     Entity[] getEntities();
 
     /**
@@ -72,6 +80,7 @@ public interface Chunk {
      *
      * @return The tile entities.
      */
+    @NotNull
     BlockState[] getTileEntities();
 
     /**
@@ -101,18 +110,6 @@ public interface Chunk {
      * Unloads and optionally saves the Chunk
      *
      * @param save Controls whether the chunk is saved
-     * @param safe Controls whether to unload the chunk when players are
-     *     nearby
-     * @return true if the chunk has unloaded successfully, otherwise false
-     * @deprecated it is never safe to remove a chunk in use
-     */
-    
-    boolean unload(boolean save, boolean safe);
-
-    /**
-     * Unloads and optionally saves the Chunk
-     *
-     * @param save Controls whether the chunk is saved
      * @return true if the chunk has unloaded successfully, otherwise false
      */
     boolean unload(boolean save);
@@ -130,4 +127,75 @@ public interface Chunk {
      * @return true if slimes are able to spawn in this chunk
      */
     boolean isSlimeChunk();
+
+    /**
+     * Gets whether the chunk at the specified chunk coordinates is force
+     * loaded.
+     * <p>
+     * A force loaded chunk will not be unloaded due to lack of player activity.
+     *
+     * @return force load status
+     * @see World#isChunkForceLoaded(int, int)
+     */
+    boolean isForceLoaded();
+
+    /**
+     * Sets whether the chunk at the specified chunk coordinates is force
+     * loaded.
+     * <p>
+     * A force loaded chunk will not be unloaded due to lack of player activity.
+     *
+     * @param forced force load status
+     * @see World#setChunkForceLoaded(int, int, boolean)
+     */
+    void setForceLoaded(boolean forced);
+
+    /**
+     * Adds a plugin ticket for this chunk, loading this chunk if it is not
+     * already loaded.
+     * <p>
+     * A plugin ticket will prevent a chunk from unloading until it is
+     * explicitly removed. A plugin instance may only have one ticket per chunk,
+     * but each chunk can have multiple plugin tickets.
+     * </p>
+     *
+     * @param plugin Plugin which owns the ticket
+     * @return {@code true} if a plugin ticket was added, {@code false} if the
+     * ticket already exists for the plugin
+     * @throws IllegalStateException If the specified plugin is not enabled
+     * @see World#addPluginChunkTicket(int, int, Plugin)
+     */
+    boolean addPluginChunkTicket(@NotNull Plugin plugin);
+
+    /**
+     * Removes the specified plugin's ticket for this chunk
+     * <p>
+     * A plugin ticket will prevent a chunk from unloading until it is
+     * explicitly removed. A plugin instance may only have one ticket per chunk,
+     * but each chunk can have multiple plugin tickets.
+     * </p>
+     *
+     * @param plugin Plugin which owns the ticket
+     * @return {@code true} if the plugin ticket was removed, {@code false} if
+     * there is no plugin ticket for the chunk
+     * @see World#removePluginChunkTicket(int, int, Plugin)
+     */
+    boolean removePluginChunkTicket(@NotNull Plugin plugin);
+
+    /**
+     * Retrieves a collection specifying which plugins have tickets for this
+     * chunk. This collection is not updated when plugin tickets are added or
+     * removed to this chunk.
+     * <p>
+     * A plugin ticket will prevent a chunk from unloading until it is
+     * explicitly removed. A plugin instance may only have one ticket per chunk,
+     * but each chunk can have multiple plugin tickets.
+     * </p>
+     *
+     * @return unmodifiable collection containing which plugins have tickets for
+     * this chunk
+     * @see World#getPluginChunkTickets(int, int)
+     */
+    @NotNull
+    Collection<Plugin> getPluginChunkTickets();
 }

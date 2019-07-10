@@ -1,13 +1,15 @@
 package org.bukkit.enchantments;
 
+import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * A simple wrapper for ease of selecting {@link Enchantment}s
  */
 public class EnchantmentWrapper extends Enchantment {
-    public EnchantmentWrapper(int id) {
-        super(id);
+    public EnchantmentWrapper(@NotNull String name) {
+        super(NamespacedKey.minecraft(name));
     }
 
     /**
@@ -15,8 +17,9 @@ public class EnchantmentWrapper extends Enchantment {
      *
      * @return Enchantment
      */
+    @NotNull
     public Enchantment getEnchantment() {
-        return Enchantment.getById(getId());
+        return Enchantment.getByKey(getKey());
     }
 
     @Override
@@ -29,16 +32,18 @@ public class EnchantmentWrapper extends Enchantment {
         return getEnchantment().getStartLevel();
     }
 
+    @NotNull
     @Override
     public EnchantmentTarget getItemTarget() {
         return getEnchantment().getItemTarget();
     }
 
     @Override
-    public boolean canEnchantItem(ItemStack item) {
+    public boolean canEnchantItem(@NotNull ItemStack item) {
         return getEnchantment().canEnchantItem(item);
     }
 
+    @NotNull
     @Override
     public String getName() {
         return getEnchantment().getName();
@@ -55,7 +60,7 @@ public class EnchantmentWrapper extends Enchantment {
     }
 
     @Override
-    public boolean conflictsWith(Enchantment other) {
+    public boolean conflictsWith(@NotNull Enchantment other) {
         return getEnchantment().conflictsWith(other);
     }
 }

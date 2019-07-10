@@ -1,17 +1,21 @@
 package org.bukkit.block;
 
 import org.bukkit.Material;
+import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Represents a captured state of a jukebox.
  */
-public interface Jukebox extends BlockState {
+public interface Jukebox extends TileState {
 
     /**
-     * Gets the record being played.
+     * Gets the record inserted into the jukebox.
      *
-     * @return The record Material, or AIR if none is playing
+     * @return The record Material, or AIR if none is inserted
      */
+    @NotNull
     public Material getPlaying();
 
     /**
@@ -19,7 +23,22 @@ public interface Jukebox extends BlockState {
      *
      * @param record The record Material, or null/AIR to stop playing
      */
-    public void setPlaying(Material record);
+    public void setPlaying(@Nullable Material record);
+
+    /**
+     * Gets the record item inserted into the jukebox.
+     *
+     * @return a copy of the inserted record, or an air stack if none
+     */
+    @NotNull
+    public ItemStack getRecord();
+
+    /**
+     * Sets the record being played.
+     *
+     * @param record the record to insert or null/AIR to empty
+     */
+    public void setRecord(@Nullable ItemStack record);
 
     /**
      * Checks if the jukebox is playing a record.

@@ -5,11 +5,15 @@ import org.bukkit.block.BlockFace;
 
 /**
  * Represents a furnace.
+ *
+ * @deprecated all usage of MaterialData is deprecated and subject to removal.
+ * Use {@link org.bukkit.block.data.BlockData}.
  */
+@Deprecated
 public class Furnace extends FurnaceAndDispenser {
 
     public Furnace() {
-        super(Material.FURNACE);
+        super(Material.LEGACY_FURNACE);
     }
 
     /**
@@ -22,27 +26,8 @@ public class Furnace extends FurnaceAndDispenser {
         setFacingDirection(direction);
     }
 
-    /**
-     * @param type the raw type id
-     * @deprecated Magic value
-     */
-    
-    public Furnace(final int type) {
-        super(type);
-    }
-
     public Furnace(final Material type) {
         super(type);
-    }
-
-    /**
-     * @param type the raw type id
-     * @param data the raw data value
-     * @deprecated Magic value
-     */
-    
-    public Furnace(final int type, final byte data) {
-        super(type, data);
     }
 
     /**
@@ -50,7 +35,7 @@ public class Furnace extends FurnaceAndDispenser {
      * @param data the raw data value
      * @deprecated Magic value
      */
-    
+    @Deprecated
     public Furnace(final Material type, final byte data) {
         super(type, data);
     }

@@ -1,6 +1,9 @@
 package org.bukkit.event.entity;
 
+import org.bukkit.Chunk;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.event.world.ChunkLoadEvent;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Called when a creature is spawned into a world.
@@ -10,11 +13,12 @@ import org.bukkit.entity.LivingEntity;
 public class CreatureSpawnEvent extends EntitySpawnEvent {
     private final SpawnReason spawnReason;
 
-    public CreatureSpawnEvent(final LivingEntity spawnee, final SpawnReason spawnReason) {
+    public CreatureSpawnEvent(@NotNull final LivingEntity spawnee, @NotNull final SpawnReason spawnReason) {
         super(spawnee);
         this.spawnReason = spawnReason;
     }
 
+    @NotNull
     @Override
     public LivingEntity getEntity() {
         return (LivingEntity) entity;
@@ -26,6 +30,7 @@ public class CreatureSpawnEvent extends EntitySpawnEvent {
      * @return A SpawnReason value detailing the reason for the creature being
      *     spawned
      */
+    @NotNull
     public SpawnReason getSpawnReason() {
         return spawnReason;
     }
@@ -46,7 +51,13 @@ public class CreatureSpawnEvent extends EntitySpawnEvent {
         JOCKEY,
         /**
          * When a creature spawns due to chunk generation
+         *
+         * @deprecated no longer called, chunks are generated with entities
+         * already existing. Consider using {@link ChunkLoadEvent},
+         * {@link ChunkLoadEvent#isNewChunk()} and {@link Chunk#getEntities()}
+         * for similar effect.
          */
+        @Deprecated
         CHUNK_GEN,
         /**
          * When a creature spawns from a spawner
@@ -138,6 +149,18 @@ public class CreatureSpawnEvent extends EntitySpawnEvent {
          * perched on jumping or being damaged
          */
         SHOULDER_ENTITY,
+        /**
+         * When a creature is spawned by another entity drowning
+         */
+        DROWNED,
+        /**
+         * When an cow is spawned by shearing a mushroom cow
+         */
+        SHEARED,
+        /**
+         * When eg an effect cloud is spawned as a result of a creeper exploding
+         */
+        EXPLOSION,
         /**
          * When a creature is spawned by plugins
          */

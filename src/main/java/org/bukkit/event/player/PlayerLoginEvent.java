@@ -1,12 +1,16 @@
 package org.bukkit.event.player;
 
+import java.net.InetAddress;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
-
-import java.net.InetAddress;
+import org.jetbrains.annotations.NotNull;
 
 /**
- * Stores details for players attempting to log in
+ * Stores details for players attempting to log in.
+ * <br>
+ * Note that this event is called <i>early</i> in the player initialization
+ * process. It is recommended that most options involving the Player
+ * <i>entity</i> be postponed to the {@link PlayerJoinEvent} instead.
  */
 public class PlayerLoginEvent extends PlayerEvent {
     private static final HandlerList handlers = new HandlerList();
@@ -14,7 +18,6 @@ public class PlayerLoginEvent extends PlayerEvent {
     private final String hostname;
     private Result result = Result.ALLOWED;
     private String message = "";
-    private final InetAddress realAddress; // Spigot
 
     /**
      * This constructor defaults message to an empty string, and result to
@@ -25,17 +28,10 @@ public class PlayerLoginEvent extends PlayerEvent {
      * @param address The address the player used to connect, provided for
      *     timing issues
      */
-    public PlayerLoginEvent(final Player player, final String hostname, final InetAddress address, final InetAddress realAddress) { // Spigot
+    public PlayerLoginEvent(@NotNull final Player player, @NotNull final String hostname, @NotNull final InetAddress address) {
         super(player);
         this.hostname = hostname;
         this.address = address;
-        // Spigot start
-        this.realAddress = realAddress;
-    }
-
-    public PlayerLoginEvent(final Player player, final String hostname, final InetAddress address) {
-        this(player, hostname, address, address);
-        // Spigot end
     }
 
     /**
@@ -48,28 +44,18 @@ public class PlayerLoginEvent extends PlayerEvent {
      * @param result The result status for this event
      * @param message The message to be displayed if result denies login
      */
-    public PlayerLoginEvent(final Player player, String hostname, final InetAddress address, final Result result, final String message, final InetAddress realAddress) { // Spigot
-        this(player, hostname, address, realAddress); // Spigot
+    public PlayerLoginEvent(@NotNull final Player player, @NotNull String hostname, @NotNull final InetAddress address, @NotNull final Result result, @NotNull final String message) {
+        this(player, hostname, address);
         this.result = result;
         this.message = message;
     }
 
-    // Spigot start
-    /**
-     * Gets the connection address of this player, regardless of whether it has been spoofed or not.
-     *
-     * @return the player's connection address
-     */
-    public InetAddress getRealAddress() {
-        return realAddress;
-    }
-    // Spigot end
-    
     /**
      * Gets the current result of the login, as an enum
      *
      * @return Current Result of the login
      */
+    @NotNull
     public Result getResult() {
         return result;
     }
@@ -79,7 +65,7 @@ public class PlayerLoginEvent extends PlayerEvent {
      *
      * @param result New result to set
      */
-    public void setResult(final Result result) {
+    public void setResult(@NotNull final Result result) {
         this.result = result;
     }
 
@@ -89,6 +75,7 @@ public class PlayerLoginEvent extends PlayerEvent {
      *
      * @return Current kick message
      */
+    @NotNull
     public String getKickMessage() {
         return message;
     }
@@ -98,7 +85,7 @@ public class PlayerLoginEvent extends PlayerEvent {
      *
      * @param message New kick message
      */
-    public void setKickMessage(final String message) {
+    public void setKickMessage(@NotNull final String message) {
         this.message = message;
     }
 
@@ -108,6 +95,7 @@ public class PlayerLoginEvent extends PlayerEvent {
      *
      * @return The hostname
      */
+    @NotNull
     public String getHostname() {
         return hostname;
     }
@@ -126,7 +114,7 @@ public class PlayerLoginEvent extends PlayerEvent {
      * @param result New result for disallowing the player
      * @param message Kick message to display to the user
      */
-    public void disallow(final Result result, final String message) {
+    public void disallow(@NotNull final Result result, @NotNull final String message) {
         this.result = result;
         this.message = message;
     }
@@ -139,15 +127,18 @@ public class PlayerLoginEvent extends PlayerEvent {
      * @return The address for this player. For legacy compatibility, this may
      *     be null.
      */
+    @NotNull
     public InetAddress getAddress() {
         return address;
     }
 
+    @NotNull
     @Override
     public HandlerList getHandlers() {
         return handlers;
     }
 
+    @NotNull
     public static HandlerList getHandlerList() {
         return handlers;
     }

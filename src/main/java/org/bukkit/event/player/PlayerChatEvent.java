@@ -1,13 +1,13 @@
 package org.bukkit.event.player;
 
+import java.util.HashSet;
+import java.util.Set;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Warning;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.HandlerList;
-
-import java.util.HashSet;
-import java.util.Set;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Holds information for player chat and commands
@@ -19,6 +19,7 @@ import java.util.Set;
  *     causes delays for chat. {@link AsyncPlayerChatEvent} is the encouraged
  *     alternative for thread safe implementations.
  */
+@Deprecated
 @Warning(reason="Listening to this event forces chat to wait for the main thread, delaying chat messages.")
 public class PlayerChatEvent extends PlayerEvent implements Cancellable {
     private static final HandlerList handlers = new HandlerList();
@@ -27,24 +28,26 @@ public class PlayerChatEvent extends PlayerEvent implements Cancellable {
     private String format;
     private final Set<Player> recipients;
 
-    public PlayerChatEvent(final Player player, final String message) {
+    public PlayerChatEvent(@NotNull final Player player, @NotNull final String message) {
         super(player);
         this.message = message;
         this.format = "<%1$s> %2$s";
         this.recipients = new HashSet<Player>(player.getServer().getOnlinePlayers());
     }
 
-    public PlayerChatEvent(final Player player, final String message, final String format, final Set<Player> recipients) {
+    public PlayerChatEvent(@NotNull final Player player, @NotNull final String message, @NotNull final String format, @NotNull final Set<Player> recipients) {
         super(player);
         this.message = message;
         this.format = format;
         this.recipients = recipients;
     }
 
+    @Override
     public boolean isCancelled() {
         return cancel;
     }
 
+    @Override
     public void setCancelled(boolean cancel) {
         this.cancel = cancel;
     }
@@ -54,6 +57,7 @@ public class PlayerChatEvent extends PlayerEvent implements Cancellable {
      *
      * @return Message the player is attempting to send
      */
+    @NotNull
     public String getMessage() {
         return message;
     }
@@ -63,7 +67,7 @@ public class PlayerChatEvent extends PlayerEvent implements Cancellable {
      *
      * @param message New message that the player will send
      */
-    public void setMessage(String message) {
+    public void setMessage(@NotNull String message) {
         this.message = message;
     }
 
@@ -73,7 +77,7 @@ public class PlayerChatEvent extends PlayerEvent implements Cancellable {
      *
      * @param player New player which this event will execute as
      */
-    public void setPlayer(final Player player) {
+    public void setPlayer(@NotNull final Player player) {
         Validate.notNull(player, "Player cannot be null");
         this.player = player;
     }
@@ -83,6 +87,7 @@ public class PlayerChatEvent extends PlayerEvent implements Cancellable {
      *
      * @return String.Format compatible format string
      */
+    @NotNull
     public String getFormat() {
         return format;
     }
@@ -92,7 +97,7 @@ public class PlayerChatEvent extends PlayerEvent implements Cancellable {
      *
      * @param format String.Format compatible format string
      */
-    public void setFormat(final String format) {
+    public void setFormat(@NotNull final String format) {
         // Oh for a better way to do this!
         try {
             String.format(format, player, message);
@@ -109,15 +114,18 @@ public class PlayerChatEvent extends PlayerEvent implements Cancellable {
      *
      * @return All Players who will see this chat message
      */
+    @NotNull
     public Set<Player> getRecipients() {
         return recipients;
     }
 
+    @NotNull
     @Override
     public HandlerList getHandlers() {
         return handlers;
     }
 
+    @NotNull
     public static HandlerList getHandlerList() {
         return handlers;
     }

@@ -1,13 +1,14 @@
 package org.bukkit.entity;
 
+import java.util.List;
 import org.bukkit.Color;
 import org.bukkit.Particle;
 import org.bukkit.potion.PotionData;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.projectiles.ProjectileSource;
-
-import java.util.List;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Represents an area effect cloud which will imbue a potion effect onto
@@ -124,6 +125,7 @@ public interface AreaEffectCloud extends Entity {
      *
      * @return particle the set particle type
      */
+    @NotNull
     Particle getParticle();
 
     /**
@@ -131,20 +133,31 @@ public interface AreaEffectCloud extends Entity {
      *
      * @param particle the new particle type
      */
-    void setParticle(Particle particle);
+    void setParticle(@NotNull Particle particle);
+
+    /**
+     * Sets the particle which this cloud will be composed of
+     *
+     * @param <T> type of particle data (see {@link Particle#getDataType()}
+     * @param particle the new particle type
+     * @param data the data to use for the particle or null,
+     *             the type of this depends on {@link Particle#getDataType()}
+     */
+    <T> void setParticle(@NotNull Particle particle, @Nullable T data);
 
     /**
      * Sets the underlying potion data
      *
      * @param data PotionData to set the base potion state to
      */
-    void setBasePotionData(PotionData data);
+    void setBasePotionData(@NotNull PotionData data);
 
     /**
      * Returns the potion data about the base potion
      *
      * @return a PotionData object
      */
+    @NotNull
     PotionData getBasePotionData();
 
     /**
@@ -163,6 +176,7 @@ public interface AreaEffectCloud extends Entity {
      *
      * @return the immutable list of custom potion effects
      */
+    @NotNull
     List<PotionEffect> getCustomEffects();
 
     /**
@@ -173,7 +187,7 @@ public interface AreaEffectCloud extends Entity {
      * overwritten
      * @return true if the effect was added as a result of this call
      */
-    boolean addCustomEffect(PotionEffect effect, boolean overwrite);
+    boolean addCustomEffect(@NotNull PotionEffect effect, boolean overwrite);
 
     /**
      * Removes a custom potion effect from this cloud.
@@ -181,7 +195,7 @@ public interface AreaEffectCloud extends Entity {
      * @param type the potion effect type to remove
      * @return true if the an effect was removed as a result of this call
      */
-    boolean removeCustomEffect(PotionEffectType type);
+    boolean removeCustomEffect(@NotNull PotionEffectType type);
 
     /**
      * Checks for a specific custom potion effect type on this cloud.
@@ -189,7 +203,7 @@ public interface AreaEffectCloud extends Entity {
      * @param type the potion effect type to check for
      * @return true if the potion has this effect
      */
-    boolean hasCustomEffect(PotionEffectType type);
+    boolean hasCustomEffect(@Nullable PotionEffectType type);
 
     /**
      * Removes all custom potion effects from this cloud.
@@ -201,6 +215,7 @@ public interface AreaEffectCloud extends Entity {
      *
      * @return cloud color
      */
+    @NotNull
     Color getColor();
 
     /**
@@ -208,13 +223,14 @@ public interface AreaEffectCloud extends Entity {
      *
      * @param color cloud color
      */
-    void setColor(Color color);
+    void setColor(@NotNull Color color);
 
     /**
      * Retrieve the original source of this cloud.
-     * 
+     *
      * @return the {@link ProjectileSource} that threw the LingeringPotion
      */
+    @Nullable
     public ProjectileSource getSource();
 
     /**
@@ -222,5 +238,5 @@ public interface AreaEffectCloud extends Entity {
      *
      * @param source the {@link ProjectileSource} that threw the LingeringPotion
      */
-    public void setSource(ProjectileSource source);
+    public void setSource(@Nullable ProjectileSource source);
 }

@@ -1,34 +1,38 @@
 package org.bukkit.block;
 
+import java.util.List;
 import org.bukkit.DyeColor;
 import org.bukkit.block.banner.Pattern;
-
-import java.util.List;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Represents a captured state of a banner.
  */
-public interface Banner extends BlockState {
+public interface Banner extends TileState {
 
     /**
      * Returns the base color for this banner
      *
      * @return the base color
      */
+    @NotNull
     DyeColor getBaseColor();
 
     /**
-     * Sets the base color for this banner
+     * Sets the base color for this banner.
+     * <b>Only valid for shield pseudo banners, otherwise base depends on block
+     * type</b>
      *
      * @param color the base color
      */
-    void setBaseColor(DyeColor color);
+    void setBaseColor(@NotNull DyeColor color);
 
     /**
      * Returns a list of patterns on this banner
      *
      * @return the patterns
      */
+    @NotNull
     List<Pattern> getPatterns();
 
     /**
@@ -36,7 +40,7 @@ public interface Banner extends BlockState {
      *
      * @param patterns the new list of patterns
      */
-    void setPatterns(List<Pattern> patterns);
+    void setPatterns(@NotNull List<Pattern> patterns);
 
     /**
      * Adds a new pattern on top of the existing
@@ -44,7 +48,7 @@ public interface Banner extends BlockState {
      *
      * @param pattern the new pattern to add
      */
-    void addPattern(Pattern pattern);
+    void addPattern(@NotNull Pattern pattern);
 
     /**
      * Returns the pattern at the specified index
@@ -52,6 +56,7 @@ public interface Banner extends BlockState {
      * @param i the index
      * @return the pattern
      */
+    @NotNull
     Pattern getPattern(int i);
 
     /**
@@ -60,6 +65,7 @@ public interface Banner extends BlockState {
      * @param i the index
      * @return the removed pattern
      */
+    @NotNull
     Pattern removePattern(int i);
 
     /**
@@ -68,7 +74,7 @@ public interface Banner extends BlockState {
      * @param i       the index
      * @param pattern the new pattern
      */
-    void setPattern(int i, Pattern pattern);
+    void setPattern(int i, @NotNull Pattern pattern);
 
     /**
      * Returns the number of patterns on this

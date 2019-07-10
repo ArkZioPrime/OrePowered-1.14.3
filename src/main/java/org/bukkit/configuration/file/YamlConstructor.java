@@ -1,13 +1,14 @@
 package org.bukkit.configuration.file;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.yaml.snakeyaml.constructor.SafeConstructor;
 import org.yaml.snakeyaml.error.YAMLException;
 import org.yaml.snakeyaml.nodes.Node;
 import org.yaml.snakeyaml.nodes.Tag;
-
-import java.util.LinkedHashMap;
-import java.util.Map;
 
 public class YamlConstructor extends SafeConstructor {
 
@@ -16,8 +17,10 @@ public class YamlConstructor extends SafeConstructor {
     }
 
     private class ConstructCustomObject extends ConstructYamlMap {
+
+        @Nullable
         @Override
-        public Object construct(Node node) {
+        public Object construct(@NotNull Node node) {
             if (node.isTwoStepsConstruction()) {
                 throw new YAMLException("Unexpected referential mapping structure. Node: " + node);
             }
@@ -41,7 +44,7 @@ public class YamlConstructor extends SafeConstructor {
         }
 
         @Override
-        public void construct2ndStep(Node node, Object object) {
+        public void construct2ndStep(@NotNull Node node, @NotNull Object object) {
             throw new YAMLException("Unexpected referential mapping structure. Node: " + node);
         }
     }

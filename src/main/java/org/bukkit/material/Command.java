@@ -4,19 +4,14 @@ import org.bukkit.Material;
 
 /**
  * Represents a command block
+ *
+ * @deprecated all usage of MaterialData is deprecated and subject to removal.
+ * Use {@link org.bukkit.block.data.BlockData}.
  */
+@Deprecated
 public class Command extends MaterialData implements Redstone {
     public Command() {
-        super(Material.COMMAND);
-    }
-
-    /**
-     * @param type the raw type id
-     * @deprecated Magic value
-     */
-    
-    public Command(final int type) {
-        super(type);
+        super(Material.LEGACY_COMMAND);
     }
 
     public Command(final Material type) {
@@ -24,21 +19,11 @@ public class Command extends MaterialData implements Redstone {
     }
 
     /**
-     * @param type the raw type id
-     * @param data the raw data value
-     * @deprecated Magic value
-     */
-    
-    public Command(final int type, final byte data) {
-        super(type, data);
-    }
-
-    /**
      * @param type the type
      * @param data the raw data value
      * @deprecated Magic value
      */
-    
+    @Deprecated
     public Command(final Material type, final byte data) {
         super(type, data);
     }
@@ -49,6 +34,7 @@ public class Command extends MaterialData implements Redstone {
      *
      * @return true if powered, otherwise false
      */
+    @Override
     public boolean isPowered() {
         return (getData() & 1) != 0;
     }

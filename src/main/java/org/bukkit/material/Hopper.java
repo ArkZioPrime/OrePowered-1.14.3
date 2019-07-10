@@ -8,7 +8,11 @@ import org.bukkit.block.BlockFace;
  * specific direction.
  *
  * @see Material#HOPPER
+ *
+ * @deprecated all usage of MaterialData is deprecated and subject to removal.
+ * Use {@link org.bukkit.block.data.BlockData}.
  */
+@Deprecated
 public class Hopper extends MaterialData implements Directional, Redstone {
 
     protected static final BlockFace DEFAULT_DIRECTION = BlockFace.DOWN;
@@ -44,18 +48,9 @@ public class Hopper extends MaterialData implements Directional, Redstone {
      * @see BlockFace
      */
     public Hopper(BlockFace facingDirection, boolean isActive) {
-        super(Material.HOPPER);
+        super(Material.LEGACY_HOPPER);
         setFacingDirection(facingDirection);
         setActive(isActive);
-    }
-
-    /**
-     * @param type the raw type id
-     * @deprecated Magic value
-     */
-    
-    public Hopper(int type) {
-        super(type);
     }
 
     public Hopper(Material type) {
@@ -63,21 +58,11 @@ public class Hopper extends MaterialData implements Directional, Redstone {
     }
 
     /**
-     * @param type the raw type id
-     * @param data the raw data value
-     * @deprecated Magic value
-     */
-    
-    public Hopper(int type, byte data) {
-        super(type, data);
-    }
-
-    /**
      * @param type the type
      * @param data the raw data value
      * @deprecated Magic value
      */
-    
+    @Deprecated
     public Hopper(Material type, byte data) {
         super(type, data);
     }

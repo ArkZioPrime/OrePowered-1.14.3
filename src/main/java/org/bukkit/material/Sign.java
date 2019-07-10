@@ -5,19 +5,14 @@ import org.bukkit.block.BlockFace;
 
 /**
  * MaterialData for signs
+ *
+ * @deprecated all usage of MaterialData is deprecated and subject to removal.
+ * Use {@link org.bukkit.block.data.BlockData}.
  */
+@Deprecated
 public class Sign extends MaterialData implements Attachable {
     public Sign() {
-        super(Material.SIGN_POST);
-    }
-
-    /**
-     * @param type the raw type id
-     * @deprecated Magic value
-     */
-    
-    public Sign(final int type) {
-        super(type);
+        super(Material.LEGACY_SIGN_POST);
     }
 
     public Sign(final Material type) {
@@ -29,17 +24,7 @@ public class Sign extends MaterialData implements Attachable {
      * @param data the raw data value
      * @deprecated Magic value
      */
-    
-    public Sign(final int type, final byte data) {
-        super(type, data);
-    }
-
-    /**
-     * @param type the raw type id
-     * @param data the raw data value
-     * @deprecated Magic value
-     */
-    
+    @Deprecated
     public Sign(final Material type, final byte data) {
         super(type, data);
     }
@@ -51,7 +36,7 @@ public class Sign extends MaterialData implements Attachable {
      *     a block
      */
     public boolean isWallSign() {
-        return getItemType() == Material.WALL_SIGN;
+        return getItemType() == Material.LEGACY_WALL_SIGN;
     }
 
     /**
@@ -59,6 +44,7 @@ public class Sign extends MaterialData implements Attachable {
      *
      * @return BlockFace attached to
      */
+    @Override
     public BlockFace getAttachedFace() {
         if (isWallSign()) {
             byte data = getData();
@@ -88,6 +74,7 @@ public class Sign extends MaterialData implements Attachable {
      *
      * @return BlockFace indicating where this sign is facing
      */
+    @Override
     public BlockFace getFacing() {
         byte data = getData();
 
@@ -148,6 +135,7 @@ public class Sign extends MaterialData implements Attachable {
         }
     }
 
+    @Override
     public void setFacingDirection(BlockFace face) {
         byte data;
 

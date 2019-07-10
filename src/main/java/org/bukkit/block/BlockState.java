@@ -4,8 +4,12 @@ import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
+import org.bukkit.block.data.BlockData;
 import org.bukkit.material.MaterialData;
 import org.bukkit.metadata.Metadatable;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Represents a captured state of a block, which will not change
@@ -24,6 +28,7 @@ public interface BlockState extends Metadatable {
      * @return the block represented by this block state
      * @throws IllegalStateException if this block state is not placed
      */
+    @NotNull
     Block getBlock();
 
     /**
@@ -31,23 +36,24 @@ public interface BlockState extends Metadatable {
      *
      * @return block specific metadata
      */
+    @NotNull
     MaterialData getData();
+
+    /**
+     * Gets the data for this block state.
+     *
+     * @return block specific data
+     */
+    @NotNull
+    BlockData getBlockData();
 
     /**
      * Gets the type of this block state.
      *
      * @return block type
      */
+    @NotNull
     Material getType();
-
-    /**
-     * Gets the type-id of this block state.
-     *
-     * @return block type-id
-     * @deprecated Magic value
-     */
-    @Deprecated
-    int getTypeId();
 
     /**
      * Gets the current light level of the block represented by this block state.
@@ -63,6 +69,7 @@ public interface BlockState extends Metadatable {
      * @return the world containing the block represented by this block state
      * @throws IllegalStateException if this block state is not placed
      */
+    @NotNull
     World getWorld();
 
     /**
@@ -93,6 +100,7 @@ public interface BlockState extends Metadatable {
      *
      * @return the location
      */
+    @NotNull
     Location getLocation();
 
     /**
@@ -106,7 +114,9 @@ public interface BlockState extends Metadatable {
      * @param loc the location to copy into
      * @return The Location object provided or null
      */
-    Location getLocation(Location loc);
+    @Contract("null -> null; !null -> !null")
+    @Nullable
+    Location getLocation(@Nullable Location loc);
 
     /**
      * Gets the chunk which contains the block represented by this block state.
@@ -114,6 +124,7 @@ public interface BlockState extends Metadatable {
      * @return the containing Chunk
      * @throws IllegalStateException if this block state is not placed
      */
+    @NotNull
     Chunk getChunk();
 
     /**
@@ -121,24 +132,21 @@ public interface BlockState extends Metadatable {
      *
      * @param data New block specific metadata
      */
-    void setData(MaterialData data);
+    void setData(@NotNull MaterialData data);
+
+    /**
+     * Sets the data for this block state.
+     *
+     * @param data New block specific data
+     */
+    void setBlockData(@NotNull BlockData data);
 
     /**
      * Sets the type of this block state.
      *
      * @param type Material to change this block state to
      */
-    void setType(Material type);
-
-    /**
-     * Sets the type-id of this block state.
-     *
-     * @param type Type-Id to change this block state to
-     * @return Whether it worked?
-     * @deprecated Magic value
-     */
-    @Deprecated
-    boolean setTypeId(int type);
+    void setType(@NotNull Material type);
 
     /**
      * Attempts to update the block represented by this state, setting it to

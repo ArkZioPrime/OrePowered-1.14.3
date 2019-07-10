@@ -1,5 +1,7 @@
 package org.bukkit.potion;
 
+import org.jetbrains.annotations.Nullable;
+
 /**
  * This enum reflects and matches each potion state that can be obtained from
  * the Creative mode inventory
@@ -15,7 +17,7 @@ public enum PotionType {
     JUMP(PotionEffectType.JUMP, true, true),
     FIRE_RESISTANCE(PotionEffectType.FIRE_RESISTANCE, false, true),
     SPEED(PotionEffectType.SPEED, true, true),
-    SLOWNESS(PotionEffectType.SLOW, false, true),
+    SLOWNESS(PotionEffectType.SLOW, true, true),
     WATER_BREATHING(PotionEffectType.WATER_BREATHING, false, true),
     INSTANT_HEAL(PotionEffectType.HEAL, true, false),
     INSTANT_DAMAGE(PotionEffectType.HARM, true, false),
@@ -23,19 +25,22 @@ public enum PotionType {
     REGEN(PotionEffectType.REGENERATION, true, true),
     STRENGTH(PotionEffectType.INCREASE_DAMAGE, true, true),
     WEAKNESS(PotionEffectType.WEAKNESS, false, true),
-    LUCK(PotionEffectType.LUCK, false, false);
+    LUCK(PotionEffectType.LUCK, false, false),
+    TURTLE_MASTER(PotionEffectType.SLOW, true, true), // TODO: multiple effects
+    SLOW_FALLING(PotionEffectType.SLOW_FALLING, false, true),
     ;
 
     private final PotionEffectType effect;
     private final boolean upgradeable;
     private final boolean extendable;
 
-    PotionType(PotionEffectType effect, boolean upgradeable, boolean extendable) {
+    PotionType(/*@Nullable*/ PotionEffectType effect, boolean upgradeable, boolean extendable) {
         this.effect = effect;
         this.upgradeable = upgradeable;
         this.extendable = extendable;
     }
 
+    @Nullable
     public PotionEffectType getEffectType() {
         return effect;
     }
@@ -48,7 +53,7 @@ public enum PotionType {
      * Checks if the potion type has an upgraded state.
      * This refers to whether or not the potion type can be Tier 2,
      * such as Potion of Fire Resistance II.
-     * 
+     *
      * @return true if the potion type can be upgraded;
      */
     public boolean isUpgradeable() {
@@ -58,19 +63,11 @@ public enum PotionType {
     /**
      * Checks if the potion type has an extended state.
      * This refers to the extended duration potions
-     * 
+     *
      * @return true if the potion type can be extended
      */
     public boolean isExtendable() {
         return extendable;
-    }
-
-    /**
-     * @deprecated Non-functional
-     */
-
-    public int getDamageValue() {
-        return this.ordinal();
     }
 
     public int getMaxLevel() {
@@ -78,18 +75,13 @@ public enum PotionType {
     }
 
     /**
-     * @deprecated Non-functional
-     */
-
-    public static PotionType getByDamageValue(int damage) {
-        return null;
-    }
-
-    /**
+     * @param effectType the effect to get by
+     * @return the matching potion type
      * @deprecated Misleading
      */
-
-    public static PotionType getByEffect(PotionEffectType effectType) {
+    @Deprecated
+    @Nullable
+    public static PotionType getByEffect(@Nullable PotionEffectType effectType) {
         if (effectType == null)
             return WATER;
         for (PotionType type : PotionType.values()) {

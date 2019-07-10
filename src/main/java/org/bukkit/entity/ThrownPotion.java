@@ -1,9 +1,9 @@
 package org.bukkit.entity;
 
+import java.util.Collection;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
-
-import java.util.Collection;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Represents a thrown potion bottle
@@ -15,6 +15,7 @@ public interface ThrownPotion extends Projectile {
      *
      * @return The potion effects
      */
+    @NotNull
     public Collection<PotionEffect> getEffects();
 
     /**
@@ -26,6 +27,7 @@ public interface ThrownPotion extends Projectile {
      *
      * @return A copy of the ItemStack for this thrown potion.
      */
+    @NotNull
     public ItemStack getItem();
 
     /**
@@ -37,5 +39,5 @@ public interface ThrownPotion extends Projectile {
      *
      * @param item New ItemStack
      */
-    public void setItem(ItemStack item);
+    public void setItem(@NotNull ItemStack item);
 }

@@ -2,13 +2,14 @@
 package org.bukkit.inventory.meta;
 
 import org.bukkit.block.BlockState;
+import org.jetbrains.annotations.NotNull;
 
 public interface BlockStateMeta extends ItemMeta {
 
     /**
      * Returns whether the item has a block state currently
      * attached to it.
-     * 
+     *
      * @return whether a block state is already attached
      */
     boolean hasBlockState();
@@ -22,6 +23,7 @@ public interface BlockStateMeta extends ItemMeta {
      *
      * @return the attached state or a new state
      */
+    @NotNull
     BlockState getBlockState();
 
     /**
@@ -31,5 +33,5 @@ public interface BlockStateMeta extends ItemMeta {
      * @throws IllegalArgumentException if the blockState is null
      *         or invalid for this item.
      */
-    void setBlockState(BlockState blockState);
+    void setBlockState(@NotNull BlockState blockState);
 }

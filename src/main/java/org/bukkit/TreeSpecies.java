@@ -1,8 +1,8 @@
 package org.bukkit;
 
 import com.google.common.collect.Maps;
-
 import java.util.Map;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Represents the different species of trees regardless of size.
@@ -36,7 +36,7 @@ public enum TreeSpecies {
     ;
 
     private final byte data;
-    private final static Map<Byte, TreeSpecies> BY_DATA = Maps.newHashMap();
+    private static final Map<Byte, TreeSpecies> BY_DATA = Maps.newHashMap();
 
     private TreeSpecies(final int data) {
         this.data = (byte) data;
@@ -48,7 +48,7 @@ public enum TreeSpecies {
      * @return A byte containing the data value of this tree species
      * @deprecated Magic value
      */
-    
+    @Deprecated
     public byte getData() {
         return data;
     }
@@ -61,7 +61,8 @@ public enum TreeSpecies {
      *     if it doesn't exist
      * @deprecated Magic value
      */
-    
+    @Deprecated
+    @Nullable
     public static TreeSpecies getByData(final byte data) {
         return BY_DATA.get(data);
     }

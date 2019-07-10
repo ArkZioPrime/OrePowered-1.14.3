@@ -4,29 +4,24 @@ import org.bukkit.Material;
 
 /**
  * Represents the tripwire
+ *
+ * @deprecated all usage of MaterialData is deprecated and subject to removal.
+ * Use {@link org.bukkit.block.data.BlockData}.
  */
+@Deprecated
 public class Tripwire extends MaterialData {
 
     public Tripwire() {
-        super(Material.TRIPWIRE);
+        super(Material.LEGACY_TRIPWIRE);
     }
 
     /**
-     * @param type the raw type id
-     * @deprecated Magic value
-     */
-    
-    public Tripwire(final int type) {
-        super(type);
-    }
-
-    /**
-     * @param type the raw type id
+     * @param type the type
      * @param data the raw data value
      * @deprecated Magic value
      */
-    
-    public Tripwire(final int type, final byte data) {
+    @Deprecated
+    public Tripwire(final Material type, final byte data) {
         super(type, data);
     }
 

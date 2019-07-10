@@ -1,8 +1,8 @@
 package org.bukkit.util;
 
-import org.bukkit.configuration.serialization.SerializableAs;
-
 import java.util.Map;
+import org.bukkit.configuration.serialization.SerializableAs;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * A vector with a hash function that floors the X, Y, Z components, a la
@@ -27,7 +27,7 @@ public class BlockVector extends Vector {
      *
      * @param vec The other vector.
      */
-    public BlockVector(Vector vec) {
+    public BlockVector(@NotNull Vector vec) {
         this.x = vec.getX();
         this.y = vec.getY();
         this.z = vec.getZ();
@@ -109,7 +109,8 @@ public class BlockVector extends Vector {
         return (BlockVector) super.clone();
     }
 
-    public static BlockVector deserialize(Map<String, Object> args) {
+    @NotNull
+    public static BlockVector deserialize(@NotNull Map<String, Object> args) {
         double x = 0;
         double y = 0;
         double z = 0;

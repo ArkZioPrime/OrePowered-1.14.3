@@ -1,13 +1,14 @@
 package org.bukkit.block;
 
 import org.bukkit.Nameable;
+import org.bukkit.loot.Lootable;
 import org.bukkit.projectiles.BlockProjectileSource;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Represents a captured state of a dispenser.
  */
-public interface Dispenser extends Container, Nameable
-{
+public interface Dispenser extends Container, Nameable, Lootable {
 
     /**
      * Gets the BlockProjectileSource object for the dispenser.
@@ -18,6 +19,7 @@ public interface Dispenser extends Container, Nameable
      * @return a BlockProjectileSource if valid, otherwise null
      * @throws IllegalStateException if this block state is not placed
      */
+    @Nullable
     public BlockProjectileSource getBlockProjectileSource();
 
     /**

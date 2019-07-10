@@ -5,29 +5,15 @@ import org.bukkit.block.BlockFace;
 
 /**
  * Material data for the piston extension block
+ *
+ * @deprecated all usage of MaterialData is deprecated and subject to removal.
+ * Use {@link org.bukkit.block.data.BlockData}.
  */
+@Deprecated
 public class PistonExtensionMaterial extends MaterialData implements Attachable {
-    /**
-     * @param type the raw type id
-     * @deprecated Magic value
-     */
-    
-    public PistonExtensionMaterial(final int type) {
-        super(type);
-    }
 
     public PistonExtensionMaterial(final Material type) {
         super(type);
-    }
-
-    /**
-     * @param type the raw type id
-     * @param data the raw data value
-     * @deprecated Magic value
-     */
-    
-    public PistonExtensionMaterial(final int type, final byte data) {
-        super(type, data);
     }
 
     /**
@@ -35,11 +21,12 @@ public class PistonExtensionMaterial extends MaterialData implements Attachable 
      * @param data the raw data value
      * @deprecated Magic value
      */
-    
+    @Deprecated
     public PistonExtensionMaterial(final Material type, final byte data) {
         super(type, data);
     }
 
+    @Override
     public void setFacingDirection(BlockFace face) {
         byte data = (byte) (getData() & 0x8);
 
@@ -63,6 +50,7 @@ public class PistonExtensionMaterial extends MaterialData implements Attachable 
         setData(data);
     }
 
+    @Override
     public BlockFace getFacing() {
         byte dir = (byte) (getData() & 7);
 
@@ -102,6 +90,7 @@ public class PistonExtensionMaterial extends MaterialData implements Attachable 
         setData((byte) (sticky ? (getData() | 0x8) : (getData() & ~0x8)));
     }
 
+    @Override
     public BlockFace getAttachedFace() {
         return getFacing().getOppositeFace();
     }

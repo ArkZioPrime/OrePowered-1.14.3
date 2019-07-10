@@ -1,23 +1,17 @@
 package org.bukkit.block;
 
+import java.util.Collection;
 import org.bukkit.Nameable;
 import org.bukkit.entity.LivingEntity;
-import org.bukkit.inventory.BeaconInventory;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
-
-import java.util.Collection;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Represents a captured state of a beacon.
  */
-public interface Beacon extends Container, Nameable {
-
-    @Override
-    BeaconInventory getInventory();
-
-    @Override
-    BeaconInventory getSnapshotInventory();
+public interface Beacon extends TileState, Lockable, Nameable {
 
     /**
      * Returns the list of players within the beacon's range of effect.
@@ -28,6 +22,7 @@ public interface Beacon extends Container, Nameable {
      * @return the players in range
      * @throws IllegalStateException if this block state is not placed
      */
+    @NotNull
     Collection<LivingEntity> getEntitiesInRange();
 
     /**
@@ -44,6 +39,7 @@ public interface Beacon extends Container, Nameable {
      *
      * @return the primary effect or null if not set
      */
+    @Nullable
     PotionEffect getPrimaryEffect();
 
     /**
@@ -51,13 +47,14 @@ public interface Beacon extends Container, Nameable {
      *
      * @param effect new primary effect
      */
-    void setPrimaryEffect(PotionEffectType effect);
+    void setPrimaryEffect(@Nullable PotionEffectType effect);
 
     /**
      * Returns the secondary effect set on the beacon.
      *
      * @return the secondary effect or null if no secondary effect
      */
+    @Nullable
     PotionEffect getSecondaryEffect();
 
     /**
@@ -66,5 +63,5 @@ public interface Beacon extends Container, Nameable {
      *
      * @param effect desired secondary effect
      */
-    void setSecondaryEffect(PotionEffectType effect);
+    void setSecondaryEffect(@Nullable PotionEffectType effect);
 }

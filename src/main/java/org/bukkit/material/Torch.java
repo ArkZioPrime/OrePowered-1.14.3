@@ -5,19 +5,14 @@ import org.bukkit.block.BlockFace;
 
 /**
  * MaterialData for torches
+ *
+ * @deprecated all usage of MaterialData is deprecated and subject to removal.
+ * Use {@link org.bukkit.block.data.BlockData}.
  */
+@Deprecated
 public class Torch extends SimpleAttachableMaterialData {
     public Torch() {
-        super(Material.TORCH);
-    }
-
-    /**
-     * @param type the raw type id
-     * @deprecated Magic value
-     */
-    
-    public Torch(final int type) {
-        super(type);
+        super(Material.LEGACY_TORCH);
     }
 
     public Torch(final Material type) {
@@ -25,21 +20,11 @@ public class Torch extends SimpleAttachableMaterialData {
     }
 
     /**
-     * @param type the raw type id
-     * @param data the raw data value
-     * @deprecated Magic value
-     */
-    
-    public Torch(final int type, final byte data) {
-        super(type, data);
-    }
-
-    /**
      * @param type the type
      * @param data the raw data value
      * @deprecated Magic value
      */
-    
+    @Deprecated
     public Torch(final Material type, final byte data) {
         super(type, data);
     }
@@ -49,6 +34,7 @@ public class Torch extends SimpleAttachableMaterialData {
      *
      * @return BlockFace attached to
      */
+    @Override
     public BlockFace getAttachedFace() {
         byte data = getData();
 
@@ -71,6 +57,7 @@ public class Torch extends SimpleAttachableMaterialData {
         }
     }
 
+    @Override
     public void setFacingDirection(BlockFace face) {
         byte data;
 

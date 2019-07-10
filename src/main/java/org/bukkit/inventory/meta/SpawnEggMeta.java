@@ -1,10 +1,11 @@
 package org.bukkit.inventory.meta;
 
-import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 
 /**
- * Represents a {@link Material#MONSTER_EGG} and it's spawned type.
+ * Represents a spawn egg and it's spawned type.
  */
 public interface SpawnEggMeta extends ItemMeta {
 
@@ -12,7 +13,10 @@ public interface SpawnEggMeta extends ItemMeta {
      * Get the type of entity this egg will spawn.
      *
      * @return The entity type. May be null for implementation specific default.
+     * @deprecated different types are different items
      */
+    @Deprecated
+    @Contract("-> fail")
     EntityType getSpawnedType();
 
     /**
@@ -20,9 +24,13 @@ public interface SpawnEggMeta extends ItemMeta {
      *
      * @param type The entity type. May be null for implementation specific
      * default.
+     * @deprecated different types are different items
      */
+    @Deprecated
+    @Contract("_ -> fail")
     void setSpawnedType(EntityType type);
 
+    @NotNull
     @Override
     SpawnEggMeta clone();
 }

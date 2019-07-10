@@ -5,7 +5,11 @@ import org.bukkit.block.BlockFace;
 
 /**
  * Represents the cocoa plant
+ *
+ * @deprecated all usage of MaterialData is deprecated and subject to removal.
+ * Use {@link org.bukkit.block.data.BlockData}.
  */
+@Deprecated
 public class CocoaPlant extends MaterialData implements Directional, Attachable {
 
     public enum CocoaPlantSize {
@@ -15,25 +19,16 @@ public class CocoaPlant extends MaterialData implements Directional, Attachable 
     }
 
     public CocoaPlant() {
-        super(Material.COCOA);
+        super(Material.LEGACY_COCOA);
     }
 
     /**
-     * @param type the raw type id     
-     * @deprecated Magic value
-     */
-    
-    public CocoaPlant(final int type) {
-        super(type);
-    }
-
-    /**
-     * @param type the raw type id
+     * @param type the type
      * @param data the raw data value
      * @deprecated Magic value
      */
-    
-    public CocoaPlant(final int type, final byte data) {
+    @Deprecated
+    public CocoaPlant(final Material type, final byte data) {
         super(type, data);
     }
 
@@ -84,10 +79,12 @@ public class CocoaPlant extends MaterialData implements Directional, Attachable 
         setData((byte) dat);
     }
 
+    @Override
     public BlockFace getAttachedFace() {
         return getFacing().getOppositeFace();
     }
 
+    @Override
     public void setFacingDirection(BlockFace face) {
         int dat = getData() & 0xC;
         switch (face) {
@@ -107,6 +104,7 @@ public class CocoaPlant extends MaterialData implements Directional, Attachable 
         setData((byte) dat);
     }
 
+    @Override
     public BlockFace getFacing() {
         switch (getData() & 0x3) {
             case 0:

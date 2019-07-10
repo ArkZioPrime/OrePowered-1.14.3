@@ -5,10 +5,14 @@ import org.bukkit.Material;
 
 /**
  * Represents the different types of coals.
+ *
+ * @deprecated all usage of MaterialData is deprecated and subject to removal.
+ * Use {@link org.bukkit.block.data.BlockData}.
  */
+@Deprecated
 public class Coal extends MaterialData {
     public Coal() {
-        super(Material.COAL);
+        super(Material.LEGACY_COAL);
     }
 
     public Coal(CoalType type) {
@@ -16,27 +20,8 @@ public class Coal extends MaterialData {
         setType(type);
     }
 
-    /**
-     * @param type the raw type id
-     * @deprecated Magic value
-     */
-    
-    public Coal(final int type) {
-        super(type);
-    }
-
     public Coal(final Material type) {
         super(type);
-    }
-
-    /**
-     * @param type the raw type id
-     * @param data the raw data value
-     * @deprecated Magic value
-     */
-    
-    public Coal(final int type, final byte data) {
-        super(type, data);
     }
 
     /**
@@ -44,7 +29,7 @@ public class Coal extends MaterialData {
      * @param data the raw data value
      * @deprecated Magic value
      */
-    
+    @Deprecated
     public Coal(final Material type, final byte data) {
         super(type, data);
     }

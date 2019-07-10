@@ -1,6 +1,7 @@
 package org.bukkit;
 
 import com.google.common.collect.Maps;
+import java.util.Map;
 import org.bukkit.entity.Ageable;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
@@ -16,8 +17,8 @@ import org.bukkit.entity.Villager;
 import org.bukkit.entity.Witch;
 import org.bukkit.entity.Wolf;
 import org.bukkit.entity.ZombieVillager;
-
-import java.util.Map;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * A list of all Effects that can happen to entities.
@@ -44,7 +45,7 @@ public enum EntityEffect {
      * @deprecated although this effect may trigger other events on non-living
      * entities, it's only supported usage is on living ones.
      */
-    
+    @Deprecated
     DEATH(3, Entity.class),
     // PAIL - SPIGOT-3641 duplicate
     // GOLEM_ATTACK(4, IronGolem.class),
@@ -68,7 +69,7 @@ public enum EntityEffect {
      * @deprecated although this effect may trigger other events on non-living
      * entities, it's only supported usage is on living ones.
      */
-    
+    @Deprecated
     SHEEP_EAT(10, Entity.class),
     /**
      * When an Iron Golem gives a rose.
@@ -151,9 +152,9 @@ public enum EntityEffect {
 
     private final byte data;
     private final Class<? extends Entity> applicable;
-    private final static Map<Byte, EntityEffect> BY_DATA = Maps.newHashMap();
+    private static final Map<Byte, EntityEffect> BY_DATA = Maps.newHashMap();
 
-    EntityEffect(final int data, Class<? extends Entity> clazz) {
+    EntityEffect(final int data, /*@NotNull*/ Class<? extends Entity> clazz) {
         this.data = (byte) data;
         this.applicable = clazz;
     }
@@ -164,7 +165,7 @@ public enum EntityEffect {
      * @return The data value
      * @deprecated Magic value
      */
-    
+    @Deprecated
     public byte getData() {
         return data;
     }
@@ -174,6 +175,7 @@ public enum EntityEffect {
      *
      * @return applicable class
      */
+    @NotNull
     public Class<? extends Entity> getApplicable() {
         return applicable;
     }
@@ -186,7 +188,8 @@ public enum EntityEffect {
      *     if it doesn't exist
      * @deprecated Magic value
      */
-    
+    @Deprecated
+    @Nullable
     public static EntityEffect getByData(final byte data) {
         return BY_DATA.get(data);
     }

@@ -1,10 +1,12 @@
 package org.bukkit;
 
+import org.jetbrains.annotations.Nullable;
+
 /**
  * Represents an achievement, which may be given to players.
  * @deprecated future versions of Minecraft do not have achievements
  */
-
+@Deprecated
 public enum Achievement {
     OPEN_INVENTORY,
     MINE_WOOD (OPEN_INVENTORY),
@@ -48,13 +50,13 @@ public enum Achievement {
         parent = null;
     }
 
-    private Achievement(Achievement parent) {
+    private Achievement(/*@Nullable*/ Achievement parent) {
         this.parent = parent;
     }
 
     /**
      * Returns whether or not this achievement has a parent achievement.
-     * 
+     *
      * @return whether the achievement has a parent achievement
      */
     public boolean hasParent() {
@@ -63,9 +65,10 @@ public enum Achievement {
 
     /**
      * Returns the parent achievement of this achievement, or null if none.
-     * 
+     *
      * @return the parent achievement or null
      */
+    @Nullable
     public Achievement getParent() {
         return parent;
     }

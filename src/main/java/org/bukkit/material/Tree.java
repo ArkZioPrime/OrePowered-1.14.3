@@ -7,11 +7,15 @@ import org.bukkit.block.BlockFace;
 /**
  * Represents the different types of Tree block that face a direction.
  *
- * @see Material#LOG
- * @see Material#LOG_2
+ * @see Material#LEGACY_LOG
+ * @see Material#LEGACY_LOG_2
+ *
+ * @deprecated all usage of MaterialData is deprecated and subject to removal.
+ * Use {@link org.bukkit.block.data.BlockData}.
  */
+@Deprecated
 public class Tree extends Wood {
-    protected static final Material DEFAULT_TYPE = Material.LOG;
+    protected static final Material DEFAULT_TYPE = Material.LEGACY_LOG;
     protected static final BlockFace DEFAULT_DIRECTION = BlockFace.UP;
 
     /**
@@ -39,15 +43,6 @@ public class Tree extends Wood {
      */
     public Tree(TreeSpecies species, BlockFace dir) {
         this(DEFAULT_TYPE, species, dir);
-    }
-
-    /**
-     * @param type the raw type id
-     * @deprecated Magic value
-     */
-    
-    public Tree(final int type) {
-        super(type);
     }
 
     /**
@@ -83,21 +78,11 @@ public class Tree extends Wood {
     }
 
     /**
-     * @param type the raw type id
-     * @param data the raw data value
-     * @deprecated Magic value
-     */
-    
-    public Tree(final int type, final byte data) {
-        super(type, data);
-    }
-
-    /**
      * @param type the type
      * @param data the raw data value
      * @deprecated Magic value
      */
-    
+    @Deprecated
     public Tree(final Material type, final byte data) {
         super(type, data);
     }

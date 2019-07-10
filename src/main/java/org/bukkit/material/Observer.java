@@ -5,11 +5,15 @@ import org.bukkit.block.BlockFace;
 
 /**
  * Represents an observer.
+ *
+ * @deprecated all usage of MaterialData is deprecated and subject to removal.
+ * Use {@link org.bukkit.block.data.BlockData}.
  */
+@Deprecated
 public class Observer extends MaterialData implements Directional, Redstone {
 
     public Observer() {
-        super(Material.OBSERVER);
+        super(Material.LEGACY_OBSERVER);
     }
 
     public Observer(BlockFace direction) {
@@ -17,27 +21,8 @@ public class Observer extends MaterialData implements Directional, Redstone {
         setFacingDirection(direction);
     }
 
-    /**
-     * @param type the raw type id
-     * @deprecated Magic value
-     */
-    
-    public Observer(final int type) {
-        super(type);
-    }
-
     public Observer(final Material type) {
         super(type);
-    }
-
-    /**
-     * @param type the raw type id
-     * @param data the raw data value
-     * @deprecated Magic value
-     */
-    
-    public Observer(final int type, final byte data) {
-        super(type, data);
     }
 
     /**
@@ -45,7 +30,7 @@ public class Observer extends MaterialData implements Directional, Redstone {
      * @param data the raw data value
      * @deprecated Magic value
      */
-    
+    @Deprecated
     public Observer(final Material type, final byte data) {
         super(type, data);
     }

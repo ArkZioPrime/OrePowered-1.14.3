@@ -1,7 +1,8 @@
 package org.bukkit.event;
 
-import org.bukkit.Bukkit;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Represents an event.
@@ -34,22 +35,6 @@ public abstract class Event {
         this.async = isAsync;
     }
 
-    // Paper start
-    /**
-     * Calls the event and tests if cancelled.
-     *
-     * @return false if event was cancelled, if cancellable. otherwise true.
-     */
-    public boolean callEvent() {
-        Bukkit.getPluginManager().callEvent(this);
-        if (this instanceof Cancellable) {
-            return !((Cancellable) this).isCancelled();
-        } else {
-            return true;
-        }
-    }
-    // Paper end
-
     /**
      * Convenience method for providing a user-friendly identifier. By
      * default, it is the event's class's {@linkplain Class#getSimpleName()
@@ -57,6 +42,7 @@ public abstract class Event {
      *
      * @return name of this event
      */
+    @NotNull
     public String getEventName() {
         if (name == null) {
             name = getClass().getSimpleName();
@@ -64,6 +50,7 @@ public abstract class Event {
         return name;
     }
 
+    @NotNull
     public abstract HandlerList getHandlers();
 
     /**

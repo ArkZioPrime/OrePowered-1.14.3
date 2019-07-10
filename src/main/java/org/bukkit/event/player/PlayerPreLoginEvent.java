@@ -1,11 +1,11 @@
 package org.bukkit.event.player;
 
+import java.net.InetAddress;
+import java.util.UUID;
 import org.bukkit.Warning;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
-
-import java.net.InetAddress;
-import java.util.UUID;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Stores details for players attempting to log in
@@ -14,6 +14,7 @@ import java.util.UUID;
  *     AsyncPlayerPreLoginEvent} is preferred to keep the secondary threads
  *     asynchronous.
  */
+@Deprecated
 @Warning(reason="This event causes a login thread to synchronize with the main thread")
 public class PlayerPreLoginEvent extends Event {
     private static final HandlerList handlers = new HandlerList();
@@ -23,11 +24,12 @@ public class PlayerPreLoginEvent extends Event {
     private final InetAddress ipAddress;
     private final UUID uniqueId;
 
-    public PlayerPreLoginEvent(final String name, final InetAddress ipAddress) {
+    @Deprecated
+    public PlayerPreLoginEvent(@NotNull final String name, @NotNull final InetAddress ipAddress) {
         this(name, ipAddress, null);
     }
 
-    public PlayerPreLoginEvent(final String name, final InetAddress ipAddress, final UUID uniqueId) {
+    public PlayerPreLoginEvent(@NotNull final String name, @NotNull final InetAddress ipAddress, @NotNull final UUID uniqueId) {
         this.result = Result.ALLOWED;
         this.message = "";
         this.name = name;
@@ -40,6 +42,7 @@ public class PlayerPreLoginEvent extends Event {
      *
      * @return Current Result of the login
      */
+    @NotNull
     public Result getResult() {
         return result;
     }
@@ -49,7 +52,7 @@ public class PlayerPreLoginEvent extends Event {
      *
      * @param result New result to set
      */
-    public void setResult(final Result result) {
+    public void setResult(@NotNull final Result result) {
         this.result = result;
     }
 
@@ -59,6 +62,7 @@ public class PlayerPreLoginEvent extends Event {
      *
      * @return Current kick message
      */
+    @NotNull
     public String getKickMessage() {
         return message;
     }
@@ -68,7 +72,7 @@ public class PlayerPreLoginEvent extends Event {
      *
      * @param message New kick message
      */
-    public void setKickMessage(final String message) {
+    public void setKickMessage(@NotNull final String message) {
         this.message = message;
     }
 
@@ -86,7 +90,7 @@ public class PlayerPreLoginEvent extends Event {
      * @param result New result for disallowing the player
      * @param message Kick message to display to the user
      */
-    public void disallow(final Result result, final String message) {
+    public void disallow(@NotNull final Result result, @NotNull final String message) {
         this.result = result;
         this.message = message;
     }
@@ -96,6 +100,7 @@ public class PlayerPreLoginEvent extends Event {
      *
      * @return the player's name
      */
+    @NotNull
     public String getName() {
         return name;
     }
@@ -105,10 +110,12 @@ public class PlayerPreLoginEvent extends Event {
      *
      * @return The IP address
      */
+    @NotNull
     public InetAddress getAddress() {
         return ipAddress;
     }
 
+    @NotNull
     @Override
     public HandlerList getHandlers() {
         return handlers;
@@ -119,10 +126,12 @@ public class PlayerPreLoginEvent extends Event {
      *
      * @return The unique ID
      */
+    @NotNull
     public UUID getUniqueId() {
         return uniqueId;
     }
 
+    @NotNull
     public static HandlerList getHandlerList() {
         return handlers;
     }

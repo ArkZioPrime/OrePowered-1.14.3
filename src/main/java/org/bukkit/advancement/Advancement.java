@@ -1,8 +1,8 @@
 package org.bukkit.advancement;
 
-import org.bukkit.Keyed;
-
 import java.util.Collection;
+import org.bukkit.Keyed;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Represents an advancement that may be awarded to a player. This class is not
@@ -15,5 +15,6 @@ public interface Advancement extends Keyed {
      *
      * @return a unmodifiable copy of all criteria
      */
+    @NotNull
     Collection<String> getCriteria();
 }

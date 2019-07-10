@@ -1,19 +1,19 @@
 package org.bukkit.command;
 
-import org.bukkit.Bukkit;
-
 import java.util.ArrayList;
+import org.bukkit.Bukkit;
+import org.jetbrains.annotations.NotNull;
 
 public class FormattedCommandAlias extends Command {
     private final String[] formatStrings;
 
-    public FormattedCommandAlias(String alias, String[] formatStrings) {
+    public FormattedCommandAlias(@NotNull String alias, @NotNull String[] formatStrings) {
         super(alias);
         this.formatStrings = formatStrings;
     }
 
     @Override
-    public boolean execute(CommandSender sender, String commandLabel, String[] args) {
+    public boolean execute(@NotNull CommandSender sender, @NotNull String commandLabel, @NotNull String[] args) {
         boolean result = false;
         ArrayList<String> commands = new ArrayList<String>();
         for (String formatString : formatStrings) {
@@ -36,7 +36,7 @@ public class FormattedCommandAlias extends Command {
         return result;
     }
 
-    private String buildCommand(String formatString, String[] args) {
+    private String buildCommand(@NotNull String formatString, @NotNull String[] args) {
         int index = formatString.indexOf('$');
         while (index != -1) {
             int start = index;

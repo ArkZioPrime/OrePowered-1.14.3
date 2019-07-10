@@ -1,7 +1,10 @@
 package org.bukkit;
 
+import com.google.common.base.Preconditions;
+import org.bukkit.block.data.BlockData;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.MaterialData;
+import org.jetbrains.annotations.NotNull;
 
 public enum Particle {
     EXPLOSION_NORMAL,
@@ -32,27 +35,43 @@ public enum Particle {
     ENCHANTMENT_TABLE,
     FLAME,
     LAVA,
-    FOOTSTEP,
     CLOUD,
-    REDSTONE,
+    REDSTONE(DustOptions.class),
     SNOWBALL,
     SNOW_SHOVEL,
     SLIME,
     HEART,
     BARRIER,
     ITEM_CRACK(ItemStack.class),
-    BLOCK_CRACK(MaterialData.class),
-    BLOCK_DUST(MaterialData.class),
+    BLOCK_CRACK(BlockData.class),
+    BLOCK_DUST(BlockData.class),
     WATER_DROP,
-    ITEM_TAKE,
     MOB_APPEARANCE,
     DRAGON_BREATH,
     END_ROD,
     DAMAGE_INDICATOR,
     SWEEP_ATTACK,
-    FALLING_DUST(MaterialData.class),
+    FALLING_DUST(BlockData.class),
     TOTEM,
-    SPIT;
+    SPIT,
+    SQUID_INK,
+    BUBBLE_POP,
+    CURRENT_DOWN,
+    BUBBLE_COLUMN_UP,
+    NAUTILUS,
+    DOLPHIN,
+    SNEEZE,
+    CAMPFIRE_COSY_SMOKE,
+    CAMPFIRE_SIGNAL_SMOKE,
+    COMPOSTER,
+    FLASH,
+    FALLING_LAVA,
+    LANDING_LAVA,
+    FALLING_WATER,
+    // ----- Legacy Separator -----
+    LEGACY_BLOCK_CRACK(MaterialData.class),
+    LEGACY_BLOCK_DUST(MaterialData.class),
+    LEGACY_FALLING_DUST(MaterialData.class);
 
     private final Class<?> dataType;
 
@@ -60,7 +79,7 @@ public enum Particle {
         dataType = Void.class;
     }
 
-    Particle(Class<?> data) {
+    Particle(/*@NotNull*/ Class<?> data) {
         dataType = data;
     }
 
@@ -68,7 +87,43 @@ public enum Particle {
      * Returns the required data type for the particle
      * @return the required data type
      */
+    @NotNull
     public Class<?> getDataType() {
         return dataType;
+    }
+
+    /**
+     * Options which can be applied to redstone dust particles - a particle
+     * color and size.
+     */
+    public static class DustOptions {
+
+        private final Color color;
+        private final float size;
+
+        public DustOptions(@NotNull Color color, float size) {
+            Preconditions.checkArgument(color != null, "color");
+            this.color = color;
+            this.size = size;
+        }
+
+        /**
+         * The color of the particles to be displayed.
+         *
+         * @return particle color
+         */
+        @NotNull
+        public Color getColor() {
+            return color;
+        }
+
+        /**
+         * Relative size of the particle.
+         *
+         * @return relative particle size
+         */
+        public float getSize() {
+            return size;
+        }
     }
 }

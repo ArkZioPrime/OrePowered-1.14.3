@@ -2,18 +2,14 @@ package org.bukkit.material;
 
 import org.bukkit.Material;
 
+/**
+ * @deprecated all usage of MaterialData is deprecated and subject to removal.
+ * Use {@link org.bukkit.block.data.BlockData}.
+ */
+@Deprecated
 public class Cake extends MaterialData {
     public Cake() {
-        super(Material.CAKE_BLOCK);
-    }
-
-    /**
-     * @param type the raw type id
-     * @deprecated Magic value
-     */
-    
-    public Cake(int type) {
-        super(type);
+        super(Material.LEGACY_CAKE_BLOCK);
     }
 
     public Cake(Material type) {
@@ -21,21 +17,11 @@ public class Cake extends MaterialData {
     }
 
     /**
-     * @param type the raw type id
-     * @param data the raw data value
-     * @deprecated Magic value
-     */
-    
-    public Cake(int type, byte data) {
-        super(type, data);
-    }
-
-    /**
      * @param type the type
      * @param data the raw data value
      * @deprecated Magic value
      */
-    
+    @Deprecated
     public Cake(Material type, byte data) {
         super(type, data);
     }
@@ -64,7 +50,7 @@ public class Cake extends MaterialData {
      * @param n The number of slices eaten
      */
     public void setSlicesEaten(int n) {
-        if (n < 6 && n >=0) {
+        if (n < 6) {
             setData((byte) n);
         } // TODO: else destroy the block? Probably not possible though
     }

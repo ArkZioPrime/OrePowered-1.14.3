@@ -1,5 +1,8 @@
 package org.bukkit.entity;
 
+import org.bukkit.Location;
+import org.jetbrains.annotations.Nullable;
+
 /**
  * Represents a Primed TNT.
  */
@@ -34,5 +37,6 @@ public interface TNTPrimed extends Explosive {
      *
      * @return the source of this primed TNT
      */
+    @Nullable
     public Entity getSource();
 }

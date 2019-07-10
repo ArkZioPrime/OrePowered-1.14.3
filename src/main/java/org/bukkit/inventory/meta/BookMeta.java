@@ -1,12 +1,12 @@
 package org.bukkit.inventory.meta;
 
-import net.md_5.bungee.api.chat.BaseComponent;
-import org.bukkit.Material;
-
 import java.util.List;
+import org.bukkit.Material;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
- * Represents a book ({@link Material#BOOK_AND_QUILL} or {@link
+ * Represents a book ({@link Material#WRITABLE_BOOK} or {@link
  * Material#WRITTEN_BOOK}) that can have a title, an author, and pages.
  */
 public interface BookMeta extends ItemMeta {
@@ -48,6 +48,7 @@ public interface BookMeta extends ItemMeta {
      *
      * @return the title of the book
      */
+    @Nullable
     String getTitle();
 
     /**
@@ -58,7 +59,7 @@ public interface BookMeta extends ItemMeta {
      * @param title the title to set
      * @return true if the title was successfully set
      */
-    boolean setTitle(String title);
+    boolean setTitle(@Nullable String title);
 
     /**
      * Checks for the existence of an author in the book.
@@ -75,6 +76,7 @@ public interface BookMeta extends ItemMeta {
      *
      * @return the author of the book
      */
+    @Nullable
     String getAuthor();
 
     /**
@@ -82,7 +84,7 @@ public interface BookMeta extends ItemMeta {
      *
      * @param author the author to set
      */
-    void setAuthor(String author);
+    void setAuthor(@Nullable String author);
 
     /**
      * Checks for the existence of generation level in the book.
@@ -99,6 +101,7 @@ public interface BookMeta extends ItemMeta {
      *
      * @return the generation of the book
      */
+    @Nullable
     Generation getGeneration();
 
     /**
@@ -106,7 +109,7 @@ public interface BookMeta extends ItemMeta {
      *
      * @param generation the generation to set
      */
-    void setGeneration(Generation generation);
+    void setGeneration(@Nullable Generation generation);
 
     /**
      * Checks for the existence of pages in the book.
@@ -117,10 +120,13 @@ public interface BookMeta extends ItemMeta {
 
     /**
      * Gets the specified page in the book. The given page must exist.
+     * <p>
+     * Pages are 1-indexed.
      *
-     * @param page the page number to get
+     * @param page the page number to get, in range [1, getPageCount()]
      * @return the page from the book
      */
+    @NotNull
     String getPage(int page);
 
     /**
@@ -129,17 +135,20 @@ public interface BookMeta extends ItemMeta {
      * <p>
      * The data can be up to 256 characters in length, additional characters
      * are truncated.
+     * <p>
+     * Pages are 1-indexed.
      *
-     * @param page the page number to set
+     * @param page the page number to set, in range [1, getPageCount()]
      * @param data the data to set for that page
      */
-    void setPage(int page, String data);
+    void setPage(int page, @NotNull String data);
 
     /**
      * Gets all the pages in the book.
      *
      * @return list of all the pages in the book
      */
+    @NotNull
     List<String> getPages();
 
     /**
@@ -148,7 +157,7 @@ public interface BookMeta extends ItemMeta {
      *
      * @param pages A list of pages to set the book to use
      */
-    void setPages(List<String> pages);
+    void setPages(@NotNull List<String> pages);
 
     /**
      * Clears the existing book pages, and sets the book to use the provided
@@ -156,7 +165,7 @@ public interface BookMeta extends ItemMeta {
      *
      * @param pages A list of strings, each being a page
      */
-    void setPages(String... pages);
+    void setPages(@NotNull String... pages);
 
     /**
      * Adds new pages to the end of the book. Up to a maximum of 50 pages with
@@ -164,7 +173,7 @@ public interface BookMeta extends ItemMeta {
      *
      * @param pages A list of strings, each being a page
      */
-    void addPage(String... pages);
+    void addPage(@NotNull String... pages);
 
     /**
      * Gets the number of pages in the book.
@@ -173,76 +182,7 @@ public interface BookMeta extends ItemMeta {
      */
     int getPageCount();
 
-    BookMeta clone();
-
-    // Spigot start
-    public class Spigot extends ItemMeta.Spigot
-    {
-        /**
-         * Gets the specified page in the book. The given page must exist.
-         *
-         * @param page the page number to get
-         * @return the page from the book
-         */
-        public BaseComponent[] getPage(int page) {
-            throw new UnsupportedOperationException("Not supported yet.");
-        }
-
-        /**
-         * Sets the specified page in the book. Pages of the book must be
-         * contiguous.
-         * <p>
-         * The data can be up to 256 characters in length, additional characters
-         * are truncated.
-         *
-         * @param page the page number to set
-         * @param data the data to set for that page
-         */
-        public void setPage(int page, BaseComponent... data) {
-            throw new UnsupportedOperationException("Not supported yet.");
-        }
-
-        /**
-         * Gets all the pages in the book.
-         *
-         * @return list of all the pages in the book
-         */
-        public List<BaseComponent[]> getPages() {
-            throw new UnsupportedOperationException("Not supported yet.");
-        }
-
-        /**
-         * Clears the existing book pages, and sets the book to use the provided
-         * pages. Maximum 50 pages with 256 characters per page.
-         *
-         * @param pages A list of pages to set the book to use
-         */
-        public void setPages(List<BaseComponent[]> pages) {
-            throw new UnsupportedOperationException("Not supported yet.");
-        }
-
-        /**
-         * Clears the existing book pages, and sets the book to use the provided
-         * pages. Maximum 50 pages with 256 characters per page.
-         *
-         * @param pages A list of component arrays, each being a page
-         */
-        public void setPages(BaseComponent[]... pages) {
-            throw new UnsupportedOperationException("Not supported yet.");
-        }
-
-        /**
-         * Adds new pages to the end of the book. Up to a maximum of 50 pages
-         * with 256 characters per page.
-         *
-         * @param pages A list of component arrays, each being a page
-         */
-        public void addPage(BaseComponent[]... pages) {
-            throw new UnsupportedOperationException("Not supported yet.");
-        }
-    }
-
     @Override
-    Spigot spigot();
-    // Spigot end
+    @NotNull
+    BookMeta clone();
 }

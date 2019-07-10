@@ -4,19 +4,14 @@ import org.bukkit.Material;
 
 /**
  * Represents a detector rail
+ *
+ * @deprecated all usage of MaterialData is deprecated and subject to removal.
+ * Use {@link org.bukkit.block.data.BlockData}.
  */
+@Deprecated
 public class DetectorRail extends ExtendedRails implements PressureSensor {
     public DetectorRail() {
-        super(Material.DETECTOR_RAIL);
-    }
-
-    /**
-     * @param type the raw type id
-     * @deprecated Magic value
-     */
-    
-    public DetectorRail(final int type) {
-        super(type);
+        super(Material.LEGACY_DETECTOR_RAIL);
     }
 
     public DetectorRail(final Material type) {
@@ -24,25 +19,16 @@ public class DetectorRail extends ExtendedRails implements PressureSensor {
     }
 
     /**
-     * @param type the raw type id
-     * @param data the raw data value
-     * @deprecated Magic value
-     */
-    
-    public DetectorRail(final int type, final byte data) {
-        super(type, data);
-    }
-
-    /**
      * @param type the type
      * @param data the raw data value
      * @deprecated Magic value
      */
-    
+    @Deprecated
     public DetectorRail(final Material type, final byte data) {
         super(type, data);
     }
 
+    @Override
     public boolean isPressed() {
         return (getData() & 0x8) == 0x8;
     }

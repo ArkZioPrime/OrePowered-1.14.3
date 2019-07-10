@@ -5,19 +5,12 @@ import org.bukkit.block.BlockFace;
 
 /**
  * Material data for the piston base block
+ *
+ * @deprecated all usage of MaterialData is deprecated and subject to removal.
+ * Use {@link org.bukkit.block.data.BlockData}.
  */
+@Deprecated
 public class PistonBaseMaterial extends MaterialData implements Directional, Redstone {
-    
-    /**
-     * Constructs a PistonBaseMaterial
-     * 
-     * @param type the raw type id
-     * @deprecated Magic value
-     */
-    
-    public PistonBaseMaterial(final int type) {
-        super(type);
-    }
 
     public PistonBaseMaterial(final Material type) {
         super(type);
@@ -25,24 +18,12 @@ public class PistonBaseMaterial extends MaterialData implements Directional, Red
 
     /**
      * Constructs a PistonBaseMaterial.
-     * 
-     * @param type the raw type id
+     *
+     * @param type the material type to use
      * @param data the raw data value
      * @deprecated Magic value
      */
-    
-    public PistonBaseMaterial(final int type, final byte data) {
-        super(type, data);
-    }
-
-    /**
-     * Constructs a PistonBaseMaterial.
-     * 
-     * @param type the material type to use
-     * @param data the raw data value 
-     * @deprecated Magic value
-     */
-    
+    @Deprecated
     public PistonBaseMaterial(final Material type, final byte data) {
         super(type, data);
     }
@@ -113,7 +94,7 @@ public class PistonBaseMaterial extends MaterialData implements Directional, Red
      * @return true if this piston is "sticky", or false
      */
     public boolean isSticky() {
-        return this.getItemType() == Material.PISTON_STICKY_BASE;
+        return this.getItemType() == Material.LEGACY_PISTON_STICKY_BASE;
     }
 
     @Override

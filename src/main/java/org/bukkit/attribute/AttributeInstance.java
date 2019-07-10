@@ -1,6 +1,7 @@
 package org.bukkit.attribute;
 
 import java.util.Collection;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Represents a mutable instance of an attribute and its associated modifiers
@@ -13,6 +14,7 @@ public interface AttributeInstance {
      *
      * @return the attribute
      */
+    @NotNull
     Attribute getAttribute();
 
     /**
@@ -34,6 +36,7 @@ public interface AttributeInstance {
      *
      * @return a copied collection of all modifiers
      */
+    @NotNull
     Collection<AttributeModifier> getModifiers();
 
     /**
@@ -41,14 +44,14 @@ public interface AttributeInstance {
      *
      * @param modifier to add
      */
-    void addModifier(AttributeModifier modifier);
+    void addModifier(@NotNull AttributeModifier modifier);
 
     /**
      * Remove a modifier from this instance.
      *
      * @param modifier to remove
      */
-    void removeModifier(AttributeModifier modifier);
+    void removeModifier(@NotNull AttributeModifier modifier);
 
     /**
      * Get the value of this instance after all associated modifiers have been

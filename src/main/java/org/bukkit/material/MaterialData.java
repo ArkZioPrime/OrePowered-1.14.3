@@ -5,33 +5,17 @@ import org.bukkit.inventory.ItemStack;
 
 /**
  * Handles specific metadata for certain items or blocks
+ *
+ * @deprecated all usage of MaterialData is deprecated and subject to removal.
+ * Use {@link org.bukkit.block.data.BlockData}.
  */
+@Deprecated
 public class MaterialData implements Cloneable {
-    private final int type;
+    private final Material type;
     private byte data = 0;
-
-    /**
-     * @param type the raw type id
-     * @deprecated Magic value
-     */
-    
-    public MaterialData(final int type) {
-        this(type, (byte) 0);
-    }
 
     public MaterialData(final Material type) {
         this(type, (byte) 0);
-    }
-
-    /**
-     * @param type the raw type id
-     * @param data the raw data value
-     * @deprecated Magic value
-     */
-    
-    public MaterialData(final int type, final byte data) {
-        this.type = type;
-        this.data = data;
     }
 
     /**
@@ -39,9 +23,10 @@ public class MaterialData implements Cloneable {
      * @param data the raw data value
      * @deprecated Magic value
      */
-    
+    @Deprecated
     public MaterialData(final Material type, final byte data) {
-        this(type.getId(), data);
+        this.type = type;
+        this.data = data;
     }
 
     /**
@@ -50,7 +35,7 @@ public class MaterialData implements Cloneable {
      * @return Raw data
      * @deprecated Magic value
      */
-    
+    @Deprecated
     public byte getData() {
         return data;
     }
@@ -61,7 +46,7 @@ public class MaterialData implements Cloneable {
      * @param data New raw data
      * @deprecated Magic value
      */
-    
+    @Deprecated
     public void setData(byte data) {
         this.data = data;
     }
@@ -72,17 +57,6 @@ public class MaterialData implements Cloneable {
      * @return Material represented by this MaterialData
      */
     public Material getItemType() {
-        return Material.getMaterial(type);
-    }
-
-    /**
-     * Gets the Material Id that this MaterialData represents
-     *
-     * @return Material Id represented by this MaterialData
-     * @deprecated Magic value
-     */
-    
-    public int getItemTypeId() {
         return type;
     }
 
@@ -93,7 +67,7 @@ public class MaterialData implements Cloneable {
      * @deprecated this method creates an ItemStack of size 0 which is not
      * generally useful. Consider {@link #toItemStack(int)}.
      */
-    
+    @Deprecated
     public ItemStack toItemStack() {
         return new ItemStack(type, 0, data);
     }
@@ -115,7 +89,7 @@ public class MaterialData implements Cloneable {
 
     @Override
     public int hashCode() {
-        return ((getItemTypeId() << 8) ^ getData());
+        return ((getItemType().hashCode() << 8) ^ getData());
     }
 
     @Override
@@ -123,7 +97,7 @@ public class MaterialData implements Cloneable {
         if (obj != null && obj instanceof MaterialData) {
             MaterialData md = (MaterialData) obj;
 
-            return (md.getItemTypeId() == getItemTypeId() && md.getData() == getData());
+            return (md.getItemType() == getItemType() && md.getData() == getData());
         } else {
             return false;
         }

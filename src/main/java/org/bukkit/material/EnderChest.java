@@ -5,11 +5,15 @@ import org.bukkit.block.BlockFace;
 
 /**
  * Represents an ender chest
+ *
+ * @deprecated all usage of MaterialData is deprecated and subject to removal.
+ * Use {@link org.bukkit.block.data.BlockData}.
  */
+@Deprecated
 public class EnderChest extends DirectionalContainer {
 
     public EnderChest() {
-        super(Material.ENDER_CHEST);
+        super(Material.LEGACY_ENDER_CHEST);
     }
 
     /**
@@ -22,27 +26,8 @@ public class EnderChest extends DirectionalContainer {
         setFacingDirection(direction);
     }
 
-    /**
-     * @param type the raw type id
-     * @deprecated Magic value
-     */
-    
-    public EnderChest(final int type) {
-        super(type);
-    }
-
     public EnderChest(final Material type) {
         super(type);
-    }
-
-    /**
-     * @param type the raw type id
-     * @param data the raw data value
-     * @deprecated Magic value
-     */
-    
-    public EnderChest(final int type, final byte data) {
-        super(type, data);
     }
 
     /**
@@ -50,7 +35,7 @@ public class EnderChest extends DirectionalContainer {
      * @param data the raw data value
      * @deprecated Magic value
      */
-    
+    @Deprecated
     public EnderChest(final Material type, final byte data) {
         super(type, data);
     }

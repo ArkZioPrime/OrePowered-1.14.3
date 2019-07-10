@@ -1,20 +1,23 @@
 package org.bukkit.material;
 
+import java.util.EnumSet;
+import java.util.Set;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
 import org.bukkit.material.types.MushroomBlockTexture;
 
-import java.util.EnumSet;
-import java.util.Set;
-
 /**
  * Represents a huge mushroom block with certain combinations of faces set to
  * cap, pores or stem.
  *
- * @see Material#HUGE_MUSHROOM_1
- * @see Material#HUGE_MUSHROOM_2
+ * @see Material#LEGACY_HUGE_MUSHROOM_1
+ * @see Material#LEGACY_HUGE_MUSHROOM_2
+ *
+ * @deprecated all usage of MaterialData is deprecated and subject to removal.
+ * Use {@link org.bukkit.block.data.BlockData}.
  */
+@Deprecated
 public class Mushroom extends MaterialData {
     private static final byte NORTH_LIMIT = 4;
     private static final byte SOUTH_LIMIT = 6;
@@ -29,12 +32,12 @@ public class Mushroom extends MaterialData {
      *
      * @param shroom A brown or red mushroom material type.
      *
-     * @see Material#HUGE_MUSHROOM_1
-     * @see Material#HUGE_MUSHROOM_2
+     * @see Material#LEGACY_HUGE_MUSHROOM_1
+     * @see Material#LEGACY_HUGE_MUSHROOM_2
      */
     public Mushroom(Material shroom) {
         super(shroom);
-        Validate.isTrue(shroom == Material.HUGE_MUSHROOM_1 || shroom == Material.HUGE_MUSHROOM_2, "Not a mushroom!");
+        Validate.isTrue(shroom == Material.LEGACY_HUGE_MUSHROOM_1 || shroom == Material.LEGACY_HUGE_MUSHROOM_2, "Not a mushroom!");
     }
 
     /**
@@ -50,8 +53,8 @@ public class Mushroom extends MaterialData {
      * @param shroom A brown or red mushroom material type.
      * @param capFace The face or faces to set to mushroom cap texture.
      *
-     * @see Material#HUGE_MUSHROOM_1
-     * @see Material#HUGE_MUSHROOM_2
+     * @see Material#LEGACY_HUGE_MUSHROOM_1
+     * @see Material#LEGACY_HUGE_MUSHROOM_2
      * @see BlockFace
      */
     public Mushroom(Material shroom, BlockFace capFace) {
@@ -64,8 +67,8 @@ public class Mushroom extends MaterialData {
      * @param shroom A brown or red mushroom material type.
      * @param texture The textured mushroom faces.
      *
-     * @see Material#HUGE_MUSHROOM_1
-     * @see Material#HUGE_MUSHROOM_2
+     * @see Material#LEGACY_HUGE_MUSHROOM_1
+     * @see Material#LEGACY_HUGE_MUSHROOM_2
      */
     public Mushroom(Material shroom, MushroomBlockTexture texture) {
         this(shroom, texture.getData());
@@ -76,21 +79,10 @@ public class Mushroom extends MaterialData {
      * @param data the raw data value
      * @deprecated Magic value
      */
-    
+    @Deprecated
     public Mushroom(Material shroom, byte data) {
         super(shroom, data);
-        Validate.isTrue(shroom == Material.HUGE_MUSHROOM_1 || shroom == Material.HUGE_MUSHROOM_2, "Not a mushroom!");
-    }
-
-    /**
-     * @param type the raw type id
-     * @param data the raw data value
-     * @deprecated Magic value
-     */
-    
-    public Mushroom(int type, byte data) {
-        super(type, data);
-        Validate.isTrue(type == Material.HUGE_MUSHROOM_1.getId() || type == Material.HUGE_MUSHROOM_2.getId(), "Not a mushroom!");
+        Validate.isTrue(shroom == Material.LEGACY_HUGE_MUSHROOM_1 || shroom == Material.LEGACY_HUGE_MUSHROOM_2, "Not a mushroom!");
     }
 
     /**
@@ -111,7 +103,7 @@ public class Mushroom extends MaterialData {
      * with {@link MushroomBlockTexture#STEM_SIDES } or
      * {@link MushroomBlockTexture#ALL_STEM}
      */
-    
+    @Deprecated
     public void setStem() {
         setData((byte) MushroomBlockTexture.STEM_SIDES.getData());
     }
@@ -178,7 +170,7 @@ public class Mushroom extends MaterialData {
      *
      * @deprecated Use MushroomBlockType cap options
      */
-    
+    @Deprecated
     public void setFacePainted(BlockFace face, boolean painted) {
         if (painted == isFacePainted(face)) {
             return;
@@ -284,7 +276,7 @@ public class Mushroom extends MaterialData {
 
     @Override
     public String toString() {
-        return Material.getMaterial(getItemTypeId()).toString() + (isStem() ? " STEM " : " CAP ") + getPaintedFaces();
+        return getItemType() + (isStem() ? " STEM " : " CAP ") + getPaintedFaces();
     }
 
     @Override

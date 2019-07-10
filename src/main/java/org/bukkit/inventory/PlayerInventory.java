@@ -1,6 +1,8 @@
 package org.bukkit.inventory;
 
 import org.bukkit.entity.HumanEntity;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Interface to the inventory of a Player, including the four armor slots and any extra slots.
@@ -10,8 +12,9 @@ public interface PlayerInventory extends Inventory {
     /**
      * Get all ItemStacks from the armor slots
      *
-     * @return All the ItemStacks from the armor slots
+     * @return All the ItemStacks from the armor slots. Individual items can be null.
      */
+    @NotNull
     public ItemStack[] getArmorContents();
 
     /**
@@ -21,8 +24,9 @@ public interface PlayerInventory extends Inventory {
      * will not be contained within {@link #getStorageContents()} or
      * {@link #getArmorContents()}
      *
-     * @return All additional ItemStacks
+     * @return All additional ItemStacks. Individual items can be null.
      */
+    @NotNull
     public ItemStack[] getExtraContents();
 
     /**
@@ -30,6 +34,7 @@ public interface PlayerInventory extends Inventory {
      *
      * @return The ItemStack in the helmet slot
      */
+    @Nullable
     public ItemStack getHelmet();
 
     /**
@@ -37,6 +42,7 @@ public interface PlayerInventory extends Inventory {
      *
      * @return The ItemStack in the chestplate slot
      */
+    @Nullable
     public ItemStack getChestplate();
 
     /**
@@ -44,6 +50,7 @@ public interface PlayerInventory extends Inventory {
      *
      * @return The ItemStack in the leg slot
      */
+    @Nullable
     public ItemStack getLeggings();
 
     /**
@@ -51,6 +58,7 @@ public interface PlayerInventory extends Inventory {
      *
      * @return The ItemStack in the boots slot
      */
+    @Nullable
     public ItemStack getBoots();
 
     /**
@@ -63,26 +71,30 @@ public interface PlayerInventory extends Inventory {
      * Indexes 36 through 39 refer to the armor slots. Though you can set armor with this method using these indexes,
      * you are encouraged to use the provided methods for those slots.
      * <p>
-     * If you attempt to use this method with an index less than 0 or greater than 39, an ArrayIndexOutOfBounds
+     * Index 40 refers to the off hand (shield) item slot. Though you can set off hand with this method using this index,
+     * you are encouraged to use the provided method for this slot.
+     * <p>
+     * If you attempt to use this method with an index less than 0 or greater than 40, an ArrayIndexOutOfBounds
      * exception will be thrown.
      *
      * @param index The index where to put the ItemStack
      * @param item The ItemStack to set
-     * @throws ArrayIndexOutOfBoundsException when index &lt; 0 || index &gt; 39
+     * @throws ArrayIndexOutOfBoundsException when index &lt; 0 || index &gt; 40
      * @see #setBoots(ItemStack)
      * @see #setChestplate(ItemStack)
      * @see #setHelmet(ItemStack)
      * @see #setLeggings(ItemStack)
+     * @see #setItemInOffHand(ItemStack)
      */
     @Override
-    public void setItem(int index, ItemStack item);
+    public void setItem(int index, @Nullable ItemStack item);
 
     /**
      * Put the given ItemStacks into the armor slots
      *
      * @param items The ItemStacks to use as armour
      */
-    public void setArmorContents(ItemStack[] items);
+    public void setArmorContents(@Nullable ItemStack[] items);
 
     /**
      * Put the given ItemStacks into the extra slots
@@ -91,7 +103,7 @@ public interface PlayerInventory extends Inventory {
      *
      * @param items The ItemStacks to use as extra
      */
-    public void setExtraContents(ItemStack[] items);
+    public void setExtraContents(@Nullable ItemStack[] items);
 
     /**
      * Put the given ItemStack into the helmet slot. This does not check if
@@ -99,7 +111,7 @@ public interface PlayerInventory extends Inventory {
      *
      * @param helmet The ItemStack to use as helmet
      */
-    public void setHelmet(ItemStack helmet);
+    public void setHelmet(@Nullable ItemStack helmet);
 
     /**
      * Put the given ItemStack into the chestplate slot. This does not check
@@ -107,7 +119,7 @@ public interface PlayerInventory extends Inventory {
      *
      * @param chestplate The ItemStack to use as chestplate
      */
-    public void setChestplate(ItemStack chestplate);
+    public void setChestplate(@Nullable ItemStack chestplate);
 
     /**
      * Put the given ItemStack into the leg slot. This does not check if the
@@ -115,7 +127,7 @@ public interface PlayerInventory extends Inventory {
      *
      * @param leggings The ItemStack to use as leggings
      */
-    public void setLeggings(ItemStack leggings);
+    public void setLeggings(@Nullable ItemStack leggings);
 
     /**
      * Put the given ItemStack into the boots slot. This does not check if the
@@ -123,7 +135,7 @@ public interface PlayerInventory extends Inventory {
      *
      * @param boots The ItemStack to use as boots
      */
-    public void setBoots(ItemStack boots);
+    public void setBoots(@Nullable ItemStack boots);
 
     /**
      * Gets a copy of the item the player is currently holding
@@ -131,6 +143,7 @@ public interface PlayerInventory extends Inventory {
      *
      * @return the currently held item
      */
+    @NotNull
     ItemStack getItemInMainHand();
 
     /**
@@ -138,7 +151,7 @@ public interface PlayerInventory extends Inventory {
      *
      * @param item The item to put into the player's hand
      */
-    void setItemInMainHand(ItemStack item);
+    void setItemInMainHand(@Nullable ItemStack item);
 
     /**
      * Gets a copy of the item the player is currently holding
@@ -146,6 +159,7 @@ public interface PlayerInventory extends Inventory {
      *
      * @return the currently held item
      */
+    @NotNull
     ItemStack getItemInOffHand();
 
     /**
@@ -153,7 +167,7 @@ public interface PlayerInventory extends Inventory {
      *
      * @param item The item to put into the player's hand
      */
-    void setItemInOffHand(ItemStack item);
+    void setItemInOffHand(@Nullable ItemStack item);
 
     /**
      * Gets a copy of the item the player is currently holding
@@ -165,6 +179,7 @@ public interface PlayerInventory extends Inventory {
      * @return the currently held item
      */
     @Deprecated
+    @NotNull
     public ItemStack getItemInHand();
 
     /**
@@ -177,7 +192,7 @@ public interface PlayerInventory extends Inventory {
      * @param stack The item to put into the player's hand
      */
     @Deprecated
-    public void setItemInHand(ItemStack stack);
+    public void setItemInHand(@Nullable ItemStack stack);
 
     /**
      * Get the slot number of the currently held item
@@ -197,18 +212,7 @@ public interface PlayerInventory extends Inventory {
      */
     public void setHeldItemSlot(int slot);
 
-    /**
-     * Clears all matching items from the inventory. Setting either value to
-     * -1 will skip it's check, while setting both to -1 will clear all items
-     * in your inventory unconditionally.
-     *
-     * @param id the id of the item you want to clear from the inventory
-     * @param data the data of the item you want to clear from the inventory
-     * @return The number of items cleared
-     * @deprecated Magic value
-     */
-    @Deprecated
-    public int clear(int id, int data);
-
+    @Override
+    @Nullable
     public HumanEntity getHolder();
 }

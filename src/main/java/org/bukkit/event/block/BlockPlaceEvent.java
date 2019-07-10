@@ -7,6 +7,7 @@ import org.bukkit.event.Cancellable;
 import org.bukkit.event.HandlerList;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Called when a block is placed by a player.
@@ -23,11 +24,12 @@ public class BlockPlaceEvent extends BlockEvent implements Cancellable {
     protected Player player;
     protected EquipmentSlot hand;
 
-    public BlockPlaceEvent(final Block placedBlock, final BlockState replacedBlockState, final Block placedAgainst, final ItemStack itemInHand, final Player thePlayer, final boolean canBuild) {
+    @Deprecated
+    public BlockPlaceEvent(@NotNull final Block placedBlock, @NotNull final BlockState replacedBlockState, @NotNull final Block placedAgainst, @NotNull final ItemStack itemInHand, @NotNull final Player thePlayer, final boolean canBuild) {
         this(placedBlock, replacedBlockState, placedAgainst, itemInHand, thePlayer, canBuild, EquipmentSlot.HAND);
     }
 
-    public BlockPlaceEvent(final Block placedBlock, final BlockState replacedBlockState, final Block placedAgainst, final ItemStack itemInHand, final Player thePlayer, final boolean canBuild, final EquipmentSlot hand) {
+    public BlockPlaceEvent(@NotNull final Block placedBlock, @NotNull final BlockState replacedBlockState, @NotNull final Block placedAgainst, @NotNull final ItemStack itemInHand, @NotNull final Player thePlayer, final boolean canBuild, @NotNull final EquipmentSlot hand) {
         super(placedBlock);
         this.placedAgainst = placedAgainst;
         this.itemInHand = itemInHand;
@@ -38,10 +40,12 @@ public class BlockPlaceEvent extends BlockEvent implements Cancellable {
         cancel = false;
     }
 
+    @Override
     public boolean isCancelled() {
         return cancel;
     }
 
+    @Override
     public void setCancelled(boolean cancel) {
         this.cancel = cancel;
     }
@@ -51,6 +55,7 @@ public class BlockPlaceEvent extends BlockEvent implements Cancellable {
      *
      * @return The Player who placed the block involved in this event
      */
+    @NotNull
     public Player getPlayer() {
         return player;
     }
@@ -61,6 +66,7 @@ public class BlockPlaceEvent extends BlockEvent implements Cancellable {
      *
      * @return The Block that was placed
      */
+    @NotNull
     public Block getBlockPlaced() {
         return getBlock();
     }
@@ -71,6 +77,7 @@ public class BlockPlaceEvent extends BlockEvent implements Cancellable {
      *
      * @return The BlockState for the block which was replaced.
      */
+    @NotNull
     public BlockState getBlockReplacedState() {
         return this.replacedBlockState;
     }
@@ -80,6 +87,7 @@ public class BlockPlaceEvent extends BlockEvent implements Cancellable {
      *
      * @return Block the block that the new block was placed against
      */
+    @NotNull
     public Block getBlockAgainst() {
         return placedAgainst;
     }
@@ -90,6 +98,7 @@ public class BlockPlaceEvent extends BlockEvent implements Cancellable {
      * @return The ItemStack for the item in the player's hand when they
      *     placed the block
      */
+    @NotNull
     public ItemStack getItemInHand() {
         return itemInHand;
     }
@@ -98,6 +107,7 @@ public class BlockPlaceEvent extends BlockEvent implements Cancellable {
      * Gets the hand which placed the block
      * @return Main or off-hand, depending on which hand was used to place the block
      */
+    @NotNull
     public EquipmentSlot getHand() {
         return this.hand;
     }
@@ -125,11 +135,13 @@ public class BlockPlaceEvent extends BlockEvent implements Cancellable {
         this.canBuild = canBuild;
     }
 
+    @NotNull
     @Override
     public HandlerList getHandlers() {
         return handlers;
     }
 
+    @NotNull
     public static HandlerList getHandlerList() {
         return handlers;
     }

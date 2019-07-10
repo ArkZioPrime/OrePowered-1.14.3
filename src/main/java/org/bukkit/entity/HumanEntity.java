@@ -1,8 +1,10 @@
 package org.bukkit.entity;
 
+import java.util.Collection;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.InventoryView;
@@ -10,18 +12,21 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.MainHand;
 import org.bukkit.inventory.Merchant;
 import org.bukkit.inventory.PlayerInventory;
-import org.bukkit.permissions.Permissible;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Represents a human entity, such as an NPC or a player
  */
-public interface HumanEntity extends LivingEntity, AnimalTamer, Permissible, InventoryHolder {
+public interface HumanEntity extends LivingEntity, AnimalTamer, InventoryHolder {
 
     /**
      * Returns the name of this player
      *
      * @return Player name
      */
+    @NotNull
+    @Override
     public String getName();
 
     /**
@@ -30,6 +35,8 @@ public interface HumanEntity extends LivingEntity, AnimalTamer, Permissible, Inv
      * @return The inventory of the player, this also contains the armor
      *     slots.
      */
+    @NotNull
+    @Override
     public PlayerInventory getInventory();
 
     /**
@@ -37,6 +44,7 @@ public interface HumanEntity extends LivingEntity, AnimalTamer, Permissible, Inv
      *
      * @return The EnderChest of the player
      */
+    @NotNull
     public Inventory getEnderChest();
 
     /**
@@ -44,6 +52,7 @@ public interface HumanEntity extends LivingEntity, AnimalTamer, Permissible, Inv
      *
      * @return the players main hand
      */
+    @NotNull
     public MainHand getMainHand();
 
     /**
@@ -54,7 +63,7 @@ public interface HumanEntity extends LivingEntity, AnimalTamer, Permissible, Inv
      * @param value The value to set the property to.
      * @return True if the property was successfully set.
      */
-    public boolean setWindowProperty(InventoryView.Property prop, int value);
+    public boolean setWindowProperty(@NotNull InventoryView.Property prop, int value);
 
     /**
      * Gets the inventory view the player is currently viewing. If they do not
@@ -62,6 +71,7 @@ public interface HumanEntity extends LivingEntity, AnimalTamer, Permissible, Inv
      *
      * @return The inventory view.
      */
+    @NotNull
     public InventoryView getOpenInventory();
 
     /**
@@ -71,7 +81,8 @@ public interface HumanEntity extends LivingEntity, AnimalTamer, Permissible, Inv
      * @param inventory The inventory to open
      * @return The newly opened inventory view
      */
-    public InventoryView openInventory(Inventory inventory);
+    @Nullable
+    public InventoryView openInventory(@NotNull Inventory inventory);
 
     /**
      * Opens an empty workbench inventory window with the player's inventory
@@ -84,7 +95,8 @@ public interface HumanEntity extends LivingEntity, AnimalTamer, Permissible, Inv
      * @return The newly opened inventory view, or null if it could not be
      *     opened.
      */
-    public InventoryView openWorkbench(Location location, boolean force);
+    @Nullable
+    public InventoryView openWorkbench(@Nullable Location location, boolean force);
 
     /**
      * Opens an empty enchanting inventory window with the player's inventory
@@ -97,14 +109,15 @@ public interface HumanEntity extends LivingEntity, AnimalTamer, Permissible, Inv
      * @return The newly opened inventory view, or null if it could not be
      *     opened.
      */
-    public InventoryView openEnchanting(Location location, boolean force);
+    @Nullable
+    public InventoryView openEnchanting(@Nullable Location location, boolean force);
 
     /**
      * Opens an inventory window to the specified inventory view.
      *
      * @param inventory The view to open
      */
-    public void openInventory(InventoryView inventory);
+    public void openInventory(@NotNull InventoryView inventory);
 
     /**
      * Starts a trade between the player and the villager.
@@ -117,7 +130,8 @@ public interface HumanEntity extends LivingEntity, AnimalTamer, Permissible, Inv
      * @return The newly opened inventory view, or null if it could not be
      * opened.
      */
-    public InventoryView openMerchant(Villager trader, boolean force);
+    @Nullable
+    public InventoryView openMerchant(@NotNull Villager trader, boolean force);
 
     /**
      * Starts a trade between the player and the merchant.
@@ -130,7 +144,8 @@ public interface HumanEntity extends LivingEntity, AnimalTamer, Permissible, Inv
      * @return The newly opened inventory view, or null if it could not be
      * opened.
      */
-    public InventoryView openMerchant(Merchant merchant, boolean force);
+    @Nullable
+    public InventoryView openMerchant(@NotNull Merchant merchant, boolean force);
 
     /**
      * Force-closes the currently open inventory view for this player, if any.
@@ -145,6 +160,7 @@ public interface HumanEntity extends LivingEntity, AnimalTamer, Permissible, Inv
      * methods in {@link PlayerInventory}.
      */
     @Deprecated
+    @NotNull
     public ItemStack getItemInHand();
 
     /**
@@ -156,7 +172,7 @@ public interface HumanEntity extends LivingEntity, AnimalTamer, Permissible, Inv
      * methods in {@link PlayerInventory}.
      */
     @Deprecated
-    public void setItemInHand(ItemStack item);
+    public void setItemInHand(@Nullable ItemStack item);
 
     /**
      * Returns the ItemStack currently on your cursor, can be empty. Will
@@ -164,6 +180,7 @@ public interface HumanEntity extends LivingEntity, AnimalTamer, Permissible, Inv
      *
      * @return The ItemStack of the item you are currently moving around.
      */
+    @NotNull
     public ItemStack getItemOnCursor();
 
     /**
@@ -173,7 +190,7 @@ public interface HumanEntity extends LivingEntity, AnimalTamer, Permissible, Inv
      *
      * @param item The ItemStack which will end up in the hand
      */
-    public void setItemOnCursor(ItemStack item);
+    public void setItemOnCursor(@Nullable ItemStack item);
 
     /**
      * Check whether a cooldown is active on the specified material.
@@ -181,7 +198,7 @@ public interface HumanEntity extends LivingEntity, AnimalTamer, Permissible, Inv
      * @param material the material to check
      * @return if a cooldown is active on the material
      */
-    public boolean hasCooldown(Material material);
+    public boolean hasCooldown(@NotNull Material material);
 
     /**
      * Get the cooldown time in ticks remaining for the specified material.
@@ -189,7 +206,7 @@ public interface HumanEntity extends LivingEntity, AnimalTamer, Permissible, Inv
      * @param material the material to check
      * @return the remaining cooldown time in ticks
      */
-    public int getCooldown(Material material);
+    public int getCooldown(@NotNull Material material);
 
     /**
      * Set a cooldown on the specified material for a certain amount of ticks.
@@ -204,14 +221,7 @@ public interface HumanEntity extends LivingEntity, AnimalTamer, Permissible, Inv
      * @param material the material to set the cooldown for
      * @param ticks the amount of ticks to set or 0 to remove
      */
-    public void setCooldown(Material material, int ticks);
-
-    /**
-     * Returns whether this player is slumbering.
-     *
-     * @return slumber state
-     */
-    public boolean isSleeping();
+    public void setCooldown(@NotNull Material material, int ticks);
 
     /**
      * Get the sleep ticks of the player. This value may be capped.
@@ -221,10 +231,68 @@ public interface HumanEntity extends LivingEntity, AnimalTamer, Permissible, Inv
     public int getSleepTicks();
 
     /**
+     * Gets the Location where the player will spawn at their bed, null if
+     * they have not slept in one or their current bed spawn is invalid.
+     *
+     * @return Bed Spawn Location if bed exists, otherwise null.
+     */
+    @Nullable
+    public Location getBedSpawnLocation();
+
+    /**
+     * Sets the Location where the player will spawn at their bed.
+     *
+     * @param location where to set the respawn location
+     */
+    public void setBedSpawnLocation(@Nullable Location location);
+
+    /**
+     * Sets the Location where the player will spawn at their bed.
+     *
+     * @param location where to set the respawn location
+     * @param force whether to forcefully set the respawn location even if a
+     *     valid bed is not present
+     */
+    public void setBedSpawnLocation(@Nullable Location location, boolean force);
+
+    /**
+     * Attempts to make the entity sleep at the given location.
+     * <br>
+     * The location must be in the current world and have a bed placed at the
+     * location. The game may also enforce other requirements such as proximity
+     * to bed, monsters, and dimension type if force is not set.
+     *
+     * @param location the location of the bed
+     * @param force whether to try and sleep at the location even if not
+     * normally possible
+     * @return whether the sleep was successful
+     */
+    public boolean sleep(@NotNull Location location, boolean force);
+
+    /**
+     * Causes the player to wakeup if they are currently sleeping.
+     *
+     * @param setSpawnLocation whether to set their spawn location to the bed
+     * they are currently sleeping in
+     * @throws IllegalStateException if not sleeping
+     */
+    public void wakeup(boolean setSpawnLocation);
+
+    /**
+     * Gets the location of the bed the player is currently sleeping in
+     *
+     * @return location
+     * @throws IllegalStateException if not sleeping
+     */
+    @NotNull
+    public Location getBedLocation();
+
+    /**
      * Gets this human's current {@link GameMode}
      *
      * @return Current game mode
      */
+    @NotNull
     public GameMode getGameMode();
 
     /**
@@ -232,7 +300,7 @@ public interface HumanEntity extends LivingEntity, AnimalTamer, Permissible, Inv
      *
      * @param mode New game mode
      */
-    public void setGameMode(GameMode mode);
+    public void setGameMode(@NotNull GameMode mode);
 
     /**
      * Check if the player is currently blocking (ie with a shield).
@@ -255,7 +323,58 @@ public interface HumanEntity extends LivingEntity, AnimalTamer, Permissible, Inv
      * @return Experience required to level up
      */
     public int getExpToLevel();
-    
+
+    /**
+     * Discover a recipe for this player such that it has not already been
+     * discovered. This method will add the key's associated recipe to the
+     * player's recipe book.
+     *
+     * @param recipe the key of the recipe to discover
+     *
+     * @return whether or not the recipe was newly discovered
+     */
+    public boolean discoverRecipe(@NotNull NamespacedKey recipe);
+
+    /**
+     * Discover a collection of recipes for this player such that they have not
+     * already been discovered. This method will add the keys' associated
+     * recipes to the player's recipe book. If a recipe in the provided
+     * collection has already been discovered, it will be silently ignored.
+     *
+     * @param recipes the keys of the recipes to discover
+     *
+     * @return the amount of newly discovered recipes where 0 indicates that
+     * none were newly discovered and a number equal to {@code recipes.size()}
+     * indicates that all were new
+     */
+    public int discoverRecipes(@NotNull Collection<NamespacedKey> recipes);
+
+    /**
+     * Undiscover a recipe for this player such that it has already been
+     * discovered. This method will remove the key's associated recipe from the
+     * player's recipe book.
+     *
+     * @param recipe the key of the recipe to undiscover
+     *
+     * @return whether or not the recipe was successfully undiscovered (i.e. it
+     * was previously discovered)
+     */
+    public boolean undiscoverRecipe(@NotNull NamespacedKey recipe);
+
+    /**
+     * Undiscover a collection of recipes for this player such that they have
+     * already been discovered. This method will remove the keys' associated
+     * recipes from the player's recipe book. If a recipe in the provided
+     * collection has not yet been discovered, it will be silently ignored.
+     *
+     * @param recipes the keys of the recipes to undiscover
+     *
+     * @return the amount of undiscovered recipes where 0 indicates that none
+     * were undiscovered and a number equal to {@code recipes.size()} indicates
+     * that all were undiscovered
+     */
+    public int undiscoverRecipes(@NotNull Collection<NamespacedKey> recipes);
+
     /**
      * Gets the entity currently perched on the left shoulder or null if no
      * entity.
@@ -268,6 +387,7 @@ public interface HumanEntity extends LivingEntity, AnimalTamer, Permissible, Inv
      * serialized entities in Bukkit. Use with care.
      */
     @Deprecated
+    @Nullable
     public Entity getShoulderEntityLeft();
 
     /**
@@ -285,7 +405,7 @@ public interface HumanEntity extends LivingEntity, AnimalTamer, Permissible, Inv
      * serialized entities in Bukkit. Use with care.
      */
     @Deprecated
-    public void setShoulderEntityLeft(Entity entity);
+    public void setShoulderEntityLeft(@Nullable Entity entity);
 
     /**
      * Gets the entity currently perched on the right shoulder or null if no
@@ -299,6 +419,7 @@ public interface HumanEntity extends LivingEntity, AnimalTamer, Permissible, Inv
      * serialized entities in Bukkit. Use with care.
      */
     @Deprecated
+    @Nullable
     public Entity getShoulderEntityRight();
 
     /**
@@ -316,5 +437,5 @@ public interface HumanEntity extends LivingEntity, AnimalTamer, Permissible, Inv
      * serialized entities in Bukkit. Use with care.
      */
     @Deprecated
-    public void setShoulderEntityRight(Entity entity);
+    public void setShoulderEntityRight(@Nullable Entity entity);
 }

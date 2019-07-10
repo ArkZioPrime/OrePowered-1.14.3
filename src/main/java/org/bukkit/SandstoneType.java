@@ -1,8 +1,8 @@
 package org.bukkit;
 
 import com.google.common.collect.Maps;
-
 import java.util.Map;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Represents the three different types of Sandstone
@@ -13,7 +13,7 @@ public enum SandstoneType {
     SMOOTH(0x2);
 
     private final byte data;
-    private final static Map<Byte, SandstoneType> BY_DATA = Maps.newHashMap();
+    private static final Map<Byte, SandstoneType> BY_DATA = Maps.newHashMap();
 
     private SandstoneType(final int data) {
         this.data = (byte) data;
@@ -25,7 +25,7 @@ public enum SandstoneType {
      * @return A byte containing the data value of this sandstone type
      * @deprecated Magic value
      */
-    
+    @Deprecated
     public byte getData() {
         return data;
     }
@@ -38,7 +38,8 @@ public enum SandstoneType {
      *     if it doesn't exist
      * @deprecated Magic value
      */
-    
+    @Deprecated
+    @Nullable
     public static SandstoneType getByData(final byte data) {
         return BY_DATA.get(data);
     }

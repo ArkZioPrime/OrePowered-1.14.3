@@ -1,9 +1,11 @@
 package org.bukkit;
 
 import org.bukkit.advancement.Advancement;
+import org.bukkit.block.data.BlockData;
 import org.bukkit.inventory.ItemStack;
-
-import java.util.List;
+import org.bukkit.material.MaterialData;
+import org.bukkit.plugin.InvalidPluginException;
+import org.bukkit.plugin.PluginDescriptionFile;
 
 /**
  * This interface provides value conversions that may be specific to a
@@ -13,20 +15,28 @@ import java.util.List;
  * may be poorly named, throw exceptions, have misleading parameters, or any
  * other bad programming practice.
  */
-
+@Deprecated
 public interface UnsafeValues {
 
-    Material getMaterialFromInternalName(String name);
+    Material toLegacy(Material material);
 
-    List<String> tabCompleteInternalMaterialName(String token, List<String> completions);
+    Material fromLegacy(Material material);
+
+    Material fromLegacy(MaterialData material);
+
+    Material fromLegacy(MaterialData material, boolean itemPriority);
+
+    BlockData fromLegacy(Material material, byte data);
+
+    Material getMaterial(String material, int version);
+
+    int getDataVersion();
 
     ItemStack modifyItemStack(ItemStack stack, String arguments);
 
-    Statistic getStatisticFromInternalName(String name);
+    void checkSupported(PluginDescriptionFile pdf) throws InvalidPluginException;
 
-    Achievement getAchievementFromInternalName(String name);
-
-    List<String> tabCompleteInternalStatisticOrAchievementName(String token, List<String> completions);
+    byte[] processClass(PluginDescriptionFile pdf, String path, byte[] clazz);
 
     /**
      * Load an advancement represented by the specified string into the server.

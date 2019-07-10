@@ -2,12 +2,12 @@ package org.bukkit;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import java.util.List;
+import java.util.Map;
 import org.apache.commons.lang.Validate;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.configuration.serialization.SerializableAs;
-
-import java.util.List;
-import java.util.Map;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Represents a single firework effect.
@@ -47,6 +47,7 @@ public final class FireworkEffect implements ConfigurationSerializable {
      *
      * @return A utility object for building a firework effect
      */
+    @NotNull
     public static Builder builder() {
         return new Builder();
     }
@@ -72,7 +73,8 @@ public final class FireworkEffect implements ConfigurationSerializable {
          * @return This object, for chaining
          * @throws IllegalArgumentException If type is null
          */
-        public Builder with(Type type) throws IllegalArgumentException {
+        @NotNull
+        public Builder with(@NotNull Type type) throws IllegalArgumentException {
             Validate.notNull(type, "Cannot have null type");
             this.type = type;
             return this;
@@ -83,6 +85,7 @@ public final class FireworkEffect implements ConfigurationSerializable {
          *
          * @return This object, for chaining
          */
+        @NotNull
         public Builder withFlicker() {
             flicker = true;
             return this;
@@ -94,6 +97,7 @@ public final class FireworkEffect implements ConfigurationSerializable {
          * @param flicker true if it should flicker, false if not
          * @return This object, for chaining
          */
+        @NotNull
         public Builder flicker(boolean flicker) {
             this.flicker = flicker;
             return this;
@@ -104,6 +108,7 @@ public final class FireworkEffect implements ConfigurationSerializable {
          *
          * @return This object, for chaining
          */
+        @NotNull
         public Builder withTrail() {
             trail = true;
             return this;
@@ -115,6 +120,7 @@ public final class FireworkEffect implements ConfigurationSerializable {
          * @param trail true if it should have a trail, false for no trail
          * @return This object, for chaining
          */
+        @NotNull
         public Builder trail(boolean trail) {
             this.trail = trail;
             return this;
@@ -127,7 +133,8 @@ public final class FireworkEffect implements ConfigurationSerializable {
          * @return This object, for chaining
          * @throws IllegalArgumentException If color is null
          */
-        public Builder withColor(Color color) throws IllegalArgumentException {
+        @NotNull
+        public Builder withColor(@NotNull Color color) throws IllegalArgumentException {
             Validate.notNull(color, "Cannot have null color");
 
             colors.add(color);
@@ -144,7 +151,8 @@ public final class FireworkEffect implements ConfigurationSerializable {
          * @throws IllegalArgumentException If any color is null (may be
          *     thrown after changes have occurred)
          */
-        public Builder withColor(Color... colors) throws IllegalArgumentException {
+        @NotNull
+        public Builder withColor(@NotNull Color... colors) throws IllegalArgumentException {
             Validate.notNull(colors, "Cannot have null colors");
             if (colors.length == 0) {
                 return this;
@@ -169,7 +177,8 @@ public final class FireworkEffect implements ConfigurationSerializable {
          * @throws IllegalArgumentException If any color is null (may be
          *     thrown after changes have occurred)
          */
-        public Builder withColor(Iterable<?> colors) throws IllegalArgumentException {
+        @NotNull
+        public Builder withColor(@NotNull Iterable<?> colors) throws IllegalArgumentException {
             Validate.notNull(colors, "Cannot have null colors");
 
             ImmutableList.Builder<Color> list = this.colors;
@@ -192,7 +201,8 @@ public final class FireworkEffect implements ConfigurationSerializable {
          * @throws IllegalArgumentException If any color is null (may be
          *     thrown after changes have occurred)
          */
-        public Builder withFade(Color color) throws IllegalArgumentException {
+        @NotNull
+        public Builder withFade(@NotNull Color color) throws IllegalArgumentException {
             Validate.notNull(color, "Cannot have null color");
 
             if (fadeColors == null) {
@@ -213,7 +223,8 @@ public final class FireworkEffect implements ConfigurationSerializable {
          * @throws IllegalArgumentException If any color is null (may be
          *     thrown after changes have occurred)
          */
-        public Builder withFade(Color... colors) throws IllegalArgumentException {
+        @NotNull
+        public Builder withFade(@NotNull Color... colors) throws IllegalArgumentException {
             Validate.notNull(colors, "Cannot have null colors");
             if (colors.length == 0) {
                 return this;
@@ -242,7 +253,8 @@ public final class FireworkEffect implements ConfigurationSerializable {
          * @throws IllegalArgumentException If any color is null (may be
          *     thrown after changes have occurred)
          */
-        public Builder withFade(Iterable<?> colors) throws IllegalArgumentException {
+        @NotNull
+        public Builder withFade(@NotNull Iterable<?> colors) throws IllegalArgumentException {
             Validate.notNull(colors, "Cannot have null colors");
 
             ImmutableList.Builder<Color> list = this.fadeColors;
@@ -268,6 +280,7 @@ public final class FireworkEffect implements ConfigurationSerializable {
          *
          * @return The representative firework effect
          */
+        @NotNull
         public FireworkEffect build() {
             return new FireworkEffect(
                 flicker,
@@ -292,7 +305,7 @@ public final class FireworkEffect implements ConfigurationSerializable {
     private final Type type;
     private String string = null;
 
-    FireworkEffect(boolean flicker, boolean trail, ImmutableList<Color> colors, ImmutableList<Color> fadeColors, Type type) {
+    FireworkEffect(boolean flicker, boolean trail, @NotNull ImmutableList<Color> colors, @NotNull ImmutableList<Color> fadeColors, @NotNull Type type) {
         if (colors.isEmpty()) {
             throw new IllegalStateException("Cannot make FireworkEffect without any color");
         }
@@ -326,6 +339,7 @@ public final class FireworkEffect implements ConfigurationSerializable {
      *
      * @return An immutable list of the primary colors
      */
+    @NotNull
     public List<Color> getColors() {
         return colors;
     }
@@ -335,6 +349,7 @@ public final class FireworkEffect implements ConfigurationSerializable {
      *
      * @return An immutable list of the fade colors
      */
+    @NotNull
     public List<Color> getFadeColors() {
         return fadeColors;
     }
@@ -344,6 +359,7 @@ public final class FireworkEffect implements ConfigurationSerializable {
      *
      * @return The effect type
      */
+    @NotNull
     public Type getType() {
         return type;
     }
@@ -353,7 +369,8 @@ public final class FireworkEffect implements ConfigurationSerializable {
      * @param map the map to deserialize
      * @return the resulting serializable
      */
-    public static ConfigurationSerializable deserialize(Map<String, Object> map) {
+    @NotNull
+    public static ConfigurationSerializable deserialize(@NotNull Map<String, Object> map) {
         Type type = Type.valueOf((String) map.get(TYPE));
 
         return builder()
@@ -365,6 +382,7 @@ public final class FireworkEffect implements ConfigurationSerializable {
             .build();
     }
 
+    @NotNull
     @Override
     public Map<String, Object> serialize() {
         return ImmutableMap.<String, Object>of(

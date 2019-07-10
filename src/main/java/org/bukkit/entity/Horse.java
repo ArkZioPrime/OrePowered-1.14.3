@@ -1,6 +1,7 @@
 package org.bukkit.entity;
 
 import org.bukkit.inventory.HorseInventory;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Represents a Horse.
@@ -109,6 +110,7 @@ public interface Horse extends AbstractHorse {
      *
      * @return a {@link Color} representing the horse's group
      */
+    @NotNull
     public Color getColor();
 
     /**
@@ -119,7 +121,7 @@ public interface Horse extends AbstractHorse {
      *
      * @param color a {@link Color} for this horse
      */
-    public void setColor(Color color);
+    public void setColor(@NotNull Color color);
 
     /**
      * Gets the horse's style.
@@ -130,6 +132,7 @@ public interface Horse extends AbstractHorse {
      *
      * @return a {@link Style} representing the horse's style
      */
+    @NotNull
     public Style getStyle();
 
     /**
@@ -141,7 +144,7 @@ public interface Horse extends AbstractHorse {
      *
      * @param style a {@link Style} for this horse
      */
-    public void setStyle(Style style);
+    public void setStyle(@NotNull Style style);
 
     /**
      * @return carrying chest status
@@ -151,12 +154,13 @@ public interface Horse extends AbstractHorse {
     public boolean isCarryingChest();
 
     /**
-     * @param chest
+     * @param chest chest
      * @deprecated see {@link ChestedHorse}
      */
     @Deprecated
     public void setCarryingChest(boolean chest);
 
+    @NotNull
     @Override
     public HorseInventory getInventory();
 }

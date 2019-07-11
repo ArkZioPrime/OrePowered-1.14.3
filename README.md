@@ -22,12 +22,12 @@ Since CraftBukkit has modified a lot of underlying layers, some of the core mods
   * or for Windows:
   `./gradlew.bat launch4j `
 
-All builds will be in `.\OrePowered\build\distributions\`
+## All builds will be in `.\OrePowered\build\distributions\`
 
 
-OrePowered-xxxxx-universal.jar - is the server we should run it
+## OrePowered-xxxxx-universal.jar - is the server we should run it
 
 
-Welcome everyone to participate in development, unity is power.
+## Welcome everyone to participate in development, unity is power.
 
-And than enjoy it
+## And than enjoy it

@@ -12,7 +12,7 @@ Since CraftBukkit has modified a lot of underlying layers, some of the core mods
 ## Building
 * Checkout project
   * You can use IDE or clone from console:
-  `git clone https://github.com/blockcraft/OrePowered.git`
+  `git clone https://github.com/GuGuYeah/OrePowered.git`
 * Setup
   * Setting up submodules:
   `git submodule update --init --recursive`
